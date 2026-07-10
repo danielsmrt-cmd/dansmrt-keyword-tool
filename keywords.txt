@@ -1,0 +1,12 @@
+# One seed keyword per line. Lines starting with # are ignored.
+# Adding a NEW keyword costs 100 quota units (one search.list) on its first run.
+weight loss after 40
+metabolism after 40
+belly fat over 40
+protein for adults over 40
+strength training over 40
+lose weight without cardio
+sleep and weight loss
+stress and belly fat
+high protein snacks for weight loss
+simple meal plan for weight loss

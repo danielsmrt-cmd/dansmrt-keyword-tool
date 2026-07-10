@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DanSmrt Keyword Radar</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  /* ==== EDIT THESE CONSTANTS (also see JS constants at top of script) ==== */
+  :root{
+    --navy:#1B2A4A;
+    --navy-deep:#111C33;
+    --yellow:#FFFF00;
+    --ink:#EAEFF7;
+    --muted:#8FA0BD;
+    --green:#38D97B;
+    --amber:#FFC93C;
+    --red:#FF5C5C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;
+    background:radial-gradient(1200px 900px at 0% 100%, #24365C 0%, var(--navy) 45%, var(--navy-deep) 100%);
+    color:var(--ink);min-height:100vh;padding:24px;
+  }
+  header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+  h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(26px,4vw,40px);
+     text-transform:uppercase;letter-spacing:.03em}
+  h1 span{color:var(--yellow)}
+  .section-h{
+    font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:.03em;font-size:clamp(20px,3vw,28px);margin:38px 0 4px;
+  }
+  .section-h span{color:var(--muted);font-weight:600;font-size:.6em;text-transform:none;letter-spacing:0}
+  .meta{color:var(--muted);font-size:15px}
+  .meta b{color:var(--ink)}
+  .controls{display:flex;gap:12px;margin:18px 0 14px;flex-wrap:wrap;align-items:center}
+  input[type=search]{
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);
+    border-radius:6px;color:var(--ink);padding:9px 12px;font:inherit;font-size:16px;min-width:240px;
+  }
+  input[type=search]:focus{outline:2px solid var(--yellow);outline-offset:1px}
+  .hint{color:var(--muted);font-size:14px}
+  table{width:100%;border-collapse:collapse;background:rgba(0,0,0,.22);border-radius:10px;overflow:hidden}
+  th{
+    font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:13px;letter-spacing:.08em;
+    text-align:left;padding:11px 12px;background:rgba(0,0,0,.35);color:var(--yellow);
+    cursor:pointer;user-select:none;white-space:nowrap;
+  }
+  th:hover{background:rgba(0,0,0,.5)}
+  th .arr{opacity:.7;font-size:11px}
+  td{padding:11px 12px;border-top:1px solid rgba(255,255,255,.07);vertical-align:top;font-size:16px}
+  tr:hover td{background:rgba(255,255,0,.04)}
+  .kw{font-size:18px}
+  .pill{
+    display:inline-block;min-width:52px;text-align:center;padding:4px 10px;border-radius:999px;
+    font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;color:#08101f;
+  }
+  .pill.green{background:var(--green)}
+  .pill.amber{background:var(--amber)}
+  .pill.red{background:var(--red);color:#fff}
+  .trend{font-size:19px}
+  .trend.up{color:var(--green)} .trend.down{color:var(--red)} .trend.flat,.trend.none{color:var(--muted)}
+  .vids{list-style:none;font-size:14px;line-height:1.5;max-width:420px}
+  .vids .t{color:var(--ink);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:420px}
+  .vids .s{color:var(--muted)}
+  .titles{list-style:none;font-size:14px;line-height:1.55;max-width:380px}
+  .titles b{color:var(--yellow);font-family:'Oswald',sans-serif;font-size:12px;margin-right:5px}
+  .subs{color:var(--muted);font-size:13px;display:block}
+  button.copy{
+    font:inherit;font-size:14px;background:var(--yellow);color:var(--navy);border:0;border-radius:6px;
+    padding:7px 12px;cursor:pointer;font-family:'Oswald',sans-serif;text-transform:uppercase;
+    letter-spacing:.04em;font-weight:700;
+  }
+  button.copy:hover{filter:brightness(.92)}
+  button.copy:focus-visible{outline:2px solid #fff;outline-offset:2px}
+  button.copy.done{background:var(--green)}
+  .empty{padding:40px;text-align:center;color:var(--muted);font-size:18px}
+  @media (max-width:900px){
+    .vids,.titles{max-width:none}
+    td,th{padding:8px}
+    body{padding:12px}
+  }
+  @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>DanSmrt <span>Keyword Radar</span></h1>
+  <div class="meta" id="meta">Loading…</div>
+</header>
+
+<div class="controls">
+  <input type="search" id="filter" placeholder="Filter keywords…" aria-label="Filter keywords">
+  <span class="hint">Click a column header to sort. “Copy for pipeline” matches the Stage&nbsp;1 paste format in shorts_pipeline_hybrid.html.</span>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th data-k="keyword">Keyword <span class="arr"></span></th>
+      <th data-k="score">Opportunity <span class="arr"></span></th>
+      <th data-k="trend">Trend <span class="arr"></span></th>
+      <th data-k="depth">Autocomplete <span class="arr"></span></th>
+      <th>Top 3 competing videos</th>
+      <th>Generated titles</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="rows"><tr><td colspan="7" class="empty">Loading latest.json…</td></tr></tbody>
+</table>
+
+<h2 class="section-h">Your Channel <span>· Retention &amp; SEO</span></h2>
+<div class="controls">
+  <input type="search" id="filterOwn" placeholder="Filter your videos…" aria-label="Filter your videos">
+  <span class="hint">Avg view % and watch time come from your connected YouTube Analytics (last 90 days). SEO score checks title/description/tags against the keyword each video best matches.</span>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th data-k2="title">Video <span class="arr"></span></th>
+      <th data-k2="views">Views <span class="arr"></span></th>
+      <th data-k2="avgPct">Avg View % <span class="arr"></span></th>
+      <th data-k2="avgDur">Avg Duration <span class="arr"></span></th>
+      <th data-k2="subsNet">Subs +/− <span class="arr"></span></th>
+      <th data-k2="seo">SEO Score <span class="arr"></span></th>
+      <th>Matched keyword</th>
+    </tr>
+  </thead>
+  <tbody id="rowsOwn"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
+</table>
+
+<script>
+/* ==== EDIT THESE CONSTANTS ==== */
+const GH_USER   = "YOUR_GITHUB_USERNAME";
+const GH_REPO   = "dansmrt-keyword-tool";
+const GH_BRANCH = "main";
+const DATA_URL  = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/${GH_BRANCH}/data/latest.json`;
+/* ============================== */
+
+let rows = [];
+let sortKey = "score", sortDir = -1;
+let ownRows = [];
+let sortKey2 = "avgPct", sortDir2 = -1;
+
+const fmt = n => n == null ? "—" :
+  n >= 1e6 ? (n/1e6).toFixed(1).replace(/\.0$/,"") + "M" :
+  n >= 1e3 ? (n/1e3).toFixed(1).replace(/\.0$/,"") + "K" : String(n);
+
+const ageStr = d => d == null ? "" :
+  d >= 365 ? Math.round(d/365) + "y" : d >= 30 ? Math.round(d/30) + "mo" : d + "d";
+
+function trendCell(m){
+  if (m == null) return `<span class="trend none">—</span>`;
+  if (m > 0.15)  return `<span class="trend up">↑</span>`;
+  if (m < -0.15) return `<span class="trend down">↓</span>`;
+  return `<span class="trend flat">→</span>`;
+}
+
+function pill(score){
+  if (score == null) return `<span class="pill red">—</span>`;
+  const cls = score >= 70 ? "green" : score >= 40 ? "amber" : "red";
+  return `<span class="pill ${cls}">${Math.round(score)}</span>`;
+}
+
+function pipelineBlock(r){
+  const lines = [
+    `KEYWORD: ${r.keyword}`,
+    `OPPORTUNITY SCORE: ${r.score == null ? "n/a" : Math.round(r.score)}/100`,
+    `TREND: ${r.trend == null ? "n/a" : (r.trend > 0.15 ? "rising" : r.trend < -0.15 ? "falling" : "flat")}`,
+    `AUTOCOMPLETE DEPTH: ${r.depth ?? "n/a"}`,
+  ];
+  if (r.titles && r.titles.length){
+    lines.push("TOP TITLES:");
+    r.titles.slice(0,5).forEach(t => lines.push(`- ${t.title} (${t.score})`));
+  }
+  return lines.join("\n");
+}
+
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g,
+  c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function render(){
+  const q = document.getElementById("filter").value.trim().toLowerCase();
+  let view = rows.filter(r => !q || r.keyword.includes(q));
+  view.sort((a,b) => {
+    const va = a[sortKey], vb = b[sortKey];
+    if (va == null && vb == null) return 0;
+    if (va == null) return 1;
+    if (vb == null) return -1;
+    return (va > vb ? 1 : va < vb ? -1 : 0) * sortDir;
+  });
+
+  document.querySelectorAll("th[data-k]").forEach(th => {
+    th.querySelector(".arr").textContent =
+      th.dataset.k === sortKey ? (sortDir === 1 ? "▲" : "▼") : "";
+  });
+
+  const body = document.getElementById("rows");
+  if (!view.length){
+    body.innerHTML = `<tr><td colspan="7" class="empty">No keywords match.</td></tr>`;
+    return;
+  }
+  body.innerHTML = view.map((r,i) => `
+    <tr>
+      <td class="kw">${esc(r.keyword)}</td>
+      <td>${pill(r.score)}</td>
+      <td>${trendCell(r.trend)}</td>
+      <td>${r.depth ?? "—"}</td>
+      <td><ul class="vids">${(r.videos||[]).slice(0,3).map(v => `
+        <li><span class="t" title="${esc(v.title)}">${esc(v.title)}</span>
+        <span class="s">${fmt(v.views)} views · ${esc(v.channel_title)}
+        (${fmt(v.channel_subs)} subs) · ${ageStr(v.age_days)}</span></li>`).join("") || "<li class='s'>—</li>"}</ul></td>
+      <td><ul class="titles">${(r.titles||[]).slice(0,3).map(t =>
+        `<li><b>${t.score}</b>${esc(t.title)}</li>`).join("") || "—"}</ul></td>
+      <td><button class="copy" data-i="${rows.indexOf(r)}">Copy for pipeline</button></td>
+    </tr>`).join("");
+
+  body.querySelectorAll("button.copy").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const r = rows[Number(btn.dataset.i)];
+      try {
+        await navigator.clipboard.writeText(pipelineBlock(r));
+        btn.textContent = "Copied ✓"; btn.classList.add("done");
+        setTimeout(() => { btn.textContent = "Copy for pipeline"; btn.classList.remove("done"); }, 1600);
+      } catch { btn.textContent = "Copy failed"; }
+    });
+  });
+}
+
+function seoPill(score){
+  if (score == null) return `<span class="pill amber">n/a</span>`;
+  const cls = score >= 70 ? "green" : score >= 40 ? "amber" : "red";
+  return `<span class="pill ${cls}">${Math.round(score)}</span>`;
+}
+
+function pctPill(pct){
+  if (pct == null) return `<span class="pill amber">—</span>`;
+  const cls = pct >= 50 ? "green" : pct >= 30 ? "amber" : "red";
+  return `<span class="pill ${cls}">${pct.toFixed(1)}%</span>`;
+}
+
+function durationStr(sec){
+  if (sec == null) return "—";
+  const m = Math.floor(sec / 60), s = Math.round(sec % 60);
+  return `${m}:${String(s).padStart(2,"0")}`;
+}
+
+function renderOwn(){
+  const q = document.getElementById("filterOwn").value.trim().toLowerCase();
+  let view = ownRows.filter(r => !q || r.title.toLowerCase().includes(q));
+  view.sort((a,b) => {
+    const va = a[sortKey2], vb = b[sortKey2];
+    if (va == null && vb == null) return 0;
+    if (va == null) return 1;
+    if (vb == null) return -1;
+    return (va > vb ? 1 : va < vb ? -1 : 0) * sortDir2;
+  });
+
+  document.querySelectorAll("th[data-k2]").forEach(th => {
+    th.querySelector(".arr").textContent =
+      th.dataset.k2 === sortKey2 ? (sortDir2 === 1 ? "▲" : "▼") : "";
+  });
+
+  const body = document.getElementById("rowsOwn");
+  if (!view.length){
+    body.innerHTML = `<tr><td colspan="7" class="empty">No own-channel data yet — run collect.py, then analytics.py + seo.py once OAuth is set up.</td></tr>`;
+    return;
+  }
+  body.innerHTML = view.map(r => `
+    <tr>
+      <td class="kw" title="${esc(r.title)}">${esc(r.title)}</td>
+      <td>${fmt(r.views)}</td>
+      <td>${pctPill(r.avgPct)}</td>
+      <td>${durationStr(r.avgDur)}</td>
+      <td>${r.subsNet == null ? "—" : (r.subsNet > 0 ? "+" : "") + r.subsNet}</td>
+      <td>${seoPill(r.seo)}</td>
+      <td>${esc(r.matchedKeyword || "—")}</td>
+    </tr>`).join("");
+}
+
+document.getElementById("filterOwn").addEventListener("input", renderOwn);
+document.querySelectorAll("th[data-k2]").forEach(th =>
+  th.addEventListener("click", () => {
+    const k = th.dataset.k2;
+    if (sortKey2 === k) sortDir2 *= -1; else { sortKey2 = k; sortDir2 = k === "title" ? 1 : -1; }
+    renderOwn();
+  }));
+
+async function load(){
+  try {
+    const res = await fetch(DATA_URL, {cache: "no-store"});
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const snap = await res.json();
+    rows = Object.values(snap.keywords || {}).map(r => ({
+      keyword: r.keyword,
+      score:   r.scores ? r.scores.composite : null,
+      trend:   r.trend_momentum,
+      depth:   r.autocomplete_depth,
+      videos:  (r.top_videos || []).slice().sort((a,b)=>(b.views||0)-(a.views||0)),
+      titles:  r.titles || [],
+    }));
+    ownRows = Object.values((snap.own_channel || {}).videos || {}).map(v => ({
+      title: v.title || "(untitled)",
+      views: v.views,
+      avgPct: v.analytics ? v.analytics.avg_view_percentage : null,
+      avgDur: v.analytics ? v.analytics.avg_view_duration_sec : null,
+      subsNet: v.analytics ? (v.analytics.subscribers_gained - v.analytics.subscribers_lost) : null,
+      seo: v.seo ? v.seo.composite : null,
+      matchedKeyword: v.seo ? v.seo.matched_keyword : null,
+    }));
+    document.getElementById("meta").innerHTML =
+      `Snapshot <b>${esc(snap.date)}</b> · ${rows.length} keywords · ${ownRows.length} own videos tracked · quota used <b>${snap.quota_units_used ?? "?"}</b>/10,000 units`;
+    render();
+    renderOwn();
+  } catch (e) {
+    document.getElementById("rows").innerHTML =
+      `<tr><td colspan="7" class="empty">Could not load latest.json (${esc(e.message)}).<br>
+       Check the GH_USER / GH_REPO / GH_BRANCH constants at the top of the script,
+       and confirm the daily Action has committed data/latest.json.</td></tr>`;
+  }
+}
+
+document.getElementById("filter").addEventListener("input", render);
+document.querySelectorAll("th[data-k]").forEach(th =>
+  th.addEventListener("click", () => {
+    const k = th.dataset.k;
+    if (sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = k === "keyword" ? 1 : -1; }
+    render();
+  }));
+
+load();
+</script>
+</body>
+</html>
