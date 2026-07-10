@@ -137,6 +137,7 @@ def own_video_record(snap: dict, video_id: str) -> dict:
         "views": None,
         "analytics": None,
         "seo": None,
+        "analysis": None,
     })
 
 

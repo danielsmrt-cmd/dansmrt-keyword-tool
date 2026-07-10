@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DanSmrt Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== EDIT THE FOUR REPO CONSTANTS BELOW (they live in the script block) ===== */
+  :root{
+    --navy:#1B2A4A; --navy-deep:#0E1730; --navy-card:#16233F;
+    --yellow:#FFFF00; --ink:#EAEFF7; --muted:#8195B5; --line:rgba(255,255,255,.08);
+    --green:#38D97B; --amber:#FFC93C; --red:#FF5C5C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:16px;
+    background:
+      radial-gradient(1100px 700px at 100% 0%, #22345C 0%, transparent 60%),
+      radial-gradient(1000px 800px at 0% 100%, #24365C 0%, var(--navy) 40%, var(--navy-deep) 100%);
+    color:var(--ink);min-height:100vh;padding:22px;
+  }
+  a{color:inherit}
+  ::selection{background:var(--yellow);color:var(--navy)}
+
+  header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:4px}
+  h1{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(24px,3.6vw,38px);
+     text-transform:uppercase;letter-spacing:.02em;line-height:1}
+  h1 b{color:var(--yellow)}
+  .meta{color:var(--muted);font-size:15px}
+  .meta strong{color:var(--ink);font-weight:700}
+  .tabhint{color:var(--muted);font-size:13px;margin:6px 0 16px}
+
+  /* ---- card grid ---- */
+  .grid{
+    display:grid;gap:16px;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-auto-rows:minmax(120px,auto);
+  }
+  .card{
+    background:linear-gradient(160deg, var(--navy-card), var(--navy-deep));
+    border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;
+    position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:0;
+  }
+  .card::before{content:"";position:absolute;inset:0 auto auto 0;width:3px;height:100%;
+    background:var(--yellow);opacity:.9}
+  .card.wide{grid-column:1 / -1}
+  .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .card-title{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:.06em;font-size:15px;color:var(--yellow);display:flex;align-items:center;gap:9px}
+  .card-title .n{color:var(--muted);font-weight:500;font-size:13px}
+  .expand{
+    background:transparent;border:1px solid var(--line);color:var(--muted);
+    border-radius:7px;cursor:pointer;font:inherit;font-size:13px;padding:4px 9px;
+    display:flex;align-items:center;gap:5px;white-space:nowrap;transition:.15s;
+  }
+  .expand:hover{border-color:var(--yellow);color:var(--yellow)}
+  .card-body{flex:1;min-height:0;overflow:auto}
+
+  /* ---- maximize overlay ---- */
+  body.maxed{overflow:hidden}
+  .card.maximized{
+    position:fixed;inset:20px;z-index:50;margin:0;max-width:none;
+    box-shadow:0 30px 80px rgba(0,0,0,.6);animation:pop .18s ease;
+  }
+  @keyframes pop{from{transform:scale(.98);opacity:.6}to{transform:scale(1);opacity:1}}
+  .scrim{position:fixed;inset:0;background:rgba(5,10,22,.72);backdrop-filter:blur(3px);
+    z-index:40;display:none}
+  .scrim.on{display:block}
+
+  /* ---- priority queue ---- */
+  .pq{display:flex;flex-direction:column;gap:10px}
+  .pq-row{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;
+    padding:12px 14px;background:rgba(255,255,255,.03);border-radius:10px;
+    border:1px solid var(--line)}
+  .pq-rank{font-family:'Oswald',sans-serif;font-weight:700;font-size:26px;color:var(--yellow);
+    width:34px;text-align:center;line-height:1}
+  .pq-kw{font-weight:700;font-size:18px}
+  .pq-sub{color:var(--muted);font-size:14px;margin-top:2px}
+  .pq-sub .best{color:var(--ink)}
+  .pq-score{text-align:right}
+  .copybtn{
+    background:var(--yellow);color:var(--navy);border:0;border-radius:7px;cursor:pointer;
+    font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
+    font-size:12px;padding:7px 11px;margin-top:6px;transition:.15s}
+  .copybtn:hover{filter:brightness(.92)}
+  .copybtn.done{background:var(--green)}
+
+  /* ---- pills ---- */
+  .pill{display:inline-block;min-width:44px;text-align:center;padding:4px 10px;border-radius:999px;
+    font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;color:#08101f}
+  .pill.green{background:var(--green)} .pill.amber{background:var(--amber)}
+  .pill.red{background:var(--red);color:#fff}
+  .pill.grey{background:#3A4A6B;color:var(--muted)}
+  .pill.sm{font-size:13px;min-width:36px;padding:3px 8px}
+
+  /* ---- tables ---- */
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:12px;letter-spacing:.06em;
+    text-align:left;color:var(--muted);font-weight:500;padding:8px 10px;position:sticky;top:0;
+    background:var(--navy-card);cursor:pointer;user-select:none;white-space:nowrap}
+  th:hover{color:var(--yellow)}
+  td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
+  tr:hover td{background:rgba(255,255,0,.03)}
+  .clip{max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sub{color:var(--muted);font-size:13px}
+
+  /* ---- bar chart (pure CSS) ---- */
+  .bars{display:flex;flex-direction:column;gap:8px}
+  .bar-row{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;font-size:14px}
+  .bar-track{height:16px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:5px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .bar-lbl{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar-val{font-family:'Oswald',sans-serif;font-weight:700;font-size:13px;width:34px;text-align:right}
+
+  /* ---- scatter (retention vs SEO) ---- */
+  .scatter{position:relative;width:100%;height:260px;border-left:1px solid var(--line);
+    border-bottom:1px solid var(--line);margin:8px 0 4px}
+  .dot{position:absolute;width:11px;height:11px;border-radius:50%;transform:translate(-50%,50%);
+    cursor:pointer;border:1px solid rgba(0,0,0,.3)}
+  .dot:hover{outline:2px solid var(--yellow);z-index:3}
+  .axl{position:absolute;color:var(--muted);font-size:12px}
+  .axl.x{bottom:-20px} .axl.y{left:-6px;transform:rotate(-90deg);transform-origin:left}
+
+  /* ---- fix panel ---- */
+  .fix-list{display:flex;flex-direction:column;gap:10px}
+  .fix-video{border:1px solid var(--line);border-radius:11px;overflow:hidden;background:rgba(255,255,255,.02)}
+  .fix-top{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center;
+    padding:12px 14px;cursor:pointer}
+  .fix-top:hover{background:rgba(255,255,0,.03)}
+  .fix-title{font-weight:700;font-size:16px}
+  .fix-summary{color:var(--muted);font-size:13.5px;margin-top:2px}
+  .pri{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;font-size:11px;
+    letter-spacing:.05em;padding:3px 9px;border-radius:6px}
+  .pri.high{background:var(--red);color:#fff} .pri.medium{background:var(--amber);color:#08101f}
+  .pri.low{background:var(--green);color:#08101f} .pri.none{background:#33456b;color:var(--muted)}
+  .chev{color:var(--muted);transition:.2s;font-size:13px}
+  .fix-video.open .chev{transform:rotate(90deg)}
+  .fix-detail{display:none;padding:0 14px 14px;flex-direction:column;gap:9px}
+  .fix-video.open .fix-detail{display:flex}
+  .sug{border-left:3px solid var(--line);padding:8px 12px;background:rgba(255,255,255,.02);border-radius:0 8px 8px 0}
+  .sug.high{border-left-color:var(--red)} .sug.medium{border-left-color:var(--amber)} .sug.low{border-left-color:var(--green)}
+  .sug-h{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:3px}
+  .sug-area{font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.05em;font-size:11px;color:var(--yellow)}
+  .sug-issue{font-size:15px}
+  .sug-fix{font-size:15px;color:var(--ink);margin-top:3px}
+  .sug-fix b{color:var(--yellow);font-weight:500}
+  .sug-ex{margin-top:6px;padding:7px 10px;background:rgba(255,255,0,.06);border-radius:7px;
+    font-size:15px;font-weight:600;display:flex;gap:8px;align-items:baseline}
+  .sug-ex .copymini{margin-left:auto;background:transparent;border:1px solid var(--line);color:var(--muted);
+    border-radius:5px;font:inherit;font-size:12px;padding:2px 7px;cursor:pointer;white-space:nowrap}
+  .sug-ex .copymini:hover{border-color:var(--yellow);color:var(--yellow)}
+  .stale{font-size:12px;color:var(--amber);margin-top:2px}
+
+  .empty{padding:30px;text-align:center;color:var(--muted);font-size:16px}
+  .controls{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  input[type=search]{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:8px;
+    color:var(--ink);padding:8px 12px;font:inherit;font-size:15px;min-width:220px}
+  input[type=search]:focus{outline:2px solid var(--yellow)}
+
+  @media (max-width:820px){
+    .grid{grid-template-columns:1fr}
+    .card.maximized{inset:8px}
+    .bar-row{grid-template-columns:110px 1fr auto}
+    .clip{max-width:180px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>DanSmrt <b>Command Center</b></h1>
+  <div class="meta" id="meta">Loading…</div>
+</header>
+<p class="tabhint">Click <b>⤢ Expand</b> on any card to focus it full-screen. Esc or click outside to close.</p>
+
+<div class="grid" id="grid">
+  <!-- What to Make Next -->
+  <section class="card wide" data-card="priority">
+    <div class="card-head">
+      <div class="card-title">▲ What to Make Next <span class="n" id="pq-n"></span></div>
+      <button class="expand" data-x>⤢ Expand</button>
+    </div>
+    <div class="card-body"><div class="pq" id="pq"><div class="empty">Loading…</div></div></div>
+  </section>
+
+  <!-- Opportunity bar chart -->
+  <section class="card" data-card="oppchart">
+    <div class="card-head">
+      <div class="card-title">Opportunity Scores</div>
+      <button class="expand" data-x>⤢ Expand</button>
+    </div>
+    <div class="card-body"><div class="bars" id="oppbars"><div class="empty">Loading…</div></div></div>
+  </section>
+
+  <!-- Retention vs SEO scatter -->
+  <section class="card" data-card="scatter">
+    <div class="card-head">
+      <div class="card-title">Retention × SEO <span class="n">your videos</span></div>
+      <button class="expand" data-x>⤢ Expand</button>
+    </div>
+    <div class="card-body">
+      <div class="scatter" id="scatter"><div class="empty">Loading…</div></div>
+      <div class="sub" style="text-align:center;margin-top:22px">X: SEO score → &nbsp;·&nbsp; Y: avg view % ↑ &nbsp;·&nbsp; top-right = winning</div>
+    </div>
+  </section>
+
+  <!-- Fix panel -->
+  <section class="card wide" data-card="fix">
+    <div class="card-head">
+      <div class="card-title">⚙ Fix Panel <span class="n" id="fix-n"></span></div>
+      <button class="expand" data-x>⤢ Expand</button>
+    </div>
+    <div class="card-body">
+      <div class="controls"><input type="search" id="fixfilter" placeholder="Filter your videos…"></div>
+      <div class="fix-list" id="fixlist"><div class="empty">Loading…</div></div>
+    </div>
+  </section>
+
+  <!-- Keyword table -->
+  <section class="card wide" data-card="keywords">
+    <div class="card-head">
+      <div class="card-title">Keyword Opportunities <span class="n" id="kw-n"></span></div>
+      <button class="expand" data-x>⤢ Expand</button>
+    </div>
+    <div class="card-body">
+      <div class="controls"><input type="search" id="kwfilter" placeholder="Filter keywords…"></div>
+      <table id="kwtable"><thead><tr>
+        <th data-s="keyword">Keyword</th><th data-s="score">Opp</th><th data-s="demand">Demand</th>
+        <th data-s="comp">Comp (inv)</th><th data-s="fit">Fit</th><th data-s="depth">Auto</th>
+        <th>Best generated title</th>
+      </tr></thead><tbody id="kwbody"></tbody></table>
+    </div>
+  </section>
+
+  <!-- Own video table -->
+  <section class="card wide" data-card="videos">
+    <div class="card-head">
+      <div class="card-title">Your Videos <span class="n" id="vid-n"></span></div>
+      <button class="expand" data-x>⤢ Expand</button>
+    </div>
+    <div class="card-body">
+      <table id="vidtable"><thead><tr>
+        <th data-v="title">Video</th><th data-v="views">Views</th><th data-v="pct">Avg View %</th>
+        <th data-v="dur">Avg Dur</th><th data-v="subs">Subs ±</th><th data-v="seo">SEO</th>
+        <th data-v="kw">Matched keyword</th>
+      </tr></thead><tbody id="vidbody"></tbody></table>
+    </div>
+  </section>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<script>
+/* ===== EDIT THESE FOUR CONSTANTS TO MATCH YOUR REPO ===== */
+const GH_USER="danielsmrt-cmd", GH_REPO="dansmrt-keyword-tool", GH_BRANCH="main";
+const DATA_URL=`https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/${GH_BRANCH}/data/latest.json`;
+/* ======================================================== */
+
+let KW=[], VID=[];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>n==null?"—":n>=1e6?(n/1e6).toFixed(1).replace(/\.0$/,"")+"M":n>=1e3?(n/1e3).toFixed(1).replace(/\.0$/,"")+"K":String(n);
+const dur=s=>s==null?"—":`${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,"0")}`;
+const scoreCls=v=>v==null?"grey":v>=70?"green":v>=40?"amber":"red";
+const pctCls=v=>v==null?"grey":v>=50?"green":v>=30?"amber":"red";
+function pill(v,sm){return `<span class="pill ${scoreCls(v)}${sm?' sm':''}">${v==null?"—":Math.round(v)}</span>`}
+function copy(txt,btn,label){navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent=label||"Copied ✓";btn.classList.add("done");setTimeout(()=>{btn.textContent=o;btn.classList.remove("done")},1500)}).catch(()=>btn.textContent="Failed")}
+
+/* ---------- maximize ---------- */
+function bindExpand(){
+  document.querySelectorAll("[data-x]").forEach(b=>b.onclick=e=>{
+    e.stopPropagation();const card=b.closest(".card");
+    const on=card.classList.toggle("maximized");
+    document.body.classList.toggle("maxed",on);
+    document.getElementById("scrim").classList.toggle("on",on);
+    b.textContent=on?"✕ Close":"⤢ Expand";
+    document.querySelectorAll(".card.maximized").forEach(c=>{if(c!==card){c.classList.remove("maximized");c.querySelector("[data-x]").textContent="⤢ Expand"}});
+  });
+}
+function closeMax(){document.querySelectorAll(".card.maximized").forEach(c=>{c.classList.remove("maximized");c.querySelector("[data-x]").textContent="⤢ Expand"});document.body.classList.remove("maxed");document.getElementById("scrim").classList.remove("on")}
+document.getElementById("scrim").onclick=closeMax;
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMax()});
+
+/* ---------- priority queue ---------- */
+function renderPQ(){
+  const ranked=[...KW].sort((a,b)=>(b.score??0)-(a.score??0)).slice(0,6);
+  document.getElementById("pq-n").textContent=`top ${ranked.length}`;
+  document.getElementById("pq").innerHTML=ranked.map((k,i)=>{
+    const best=k.titles&&k.titles[0];
+    return `<div class="pq-row">
+      <div class="pq-rank">${i+1}</div>
+      <div>
+        <div class="pq-kw">${esc(k.keyword)}</div>
+        <div class="pq-sub">${best?`Best title: <span class="best">${esc(best.title)}</span> <span class="pill sm ${scoreCls(best.score)}">${best.score}</span>`:'No generated titles yet — run titles'}</div>
+        <button class="copybtn" data-copy="${i}">Copy for pipeline</button>
+      </div>
+      <div class="pq-score">${pill(k.score)}<div class="sub" style="margin-top:4px">fit ${Math.round(k.fit??0)}</div></div>
+    </div>`}).join("")||`<div class="empty">No keywords yet.</div>`;
+  document.querySelectorAll("#pq [data-copy]").forEach(b=>b.onclick=()=>{
+    const k=ranked[+b.dataset.copy];const lines=[`KEYWORD: ${k.keyword}`,`OPPORTUNITY: ${Math.round(k.score)}/100`,`AUTOCOMPLETE DEPTH: ${k.depth??"n/a"}`];
+    if(k.titles&&k.titles.length){lines.push("TOP TITLES:");k.titles.slice(0,5).forEach(t=>lines.push(`- ${t.title} (${t.score})`))}
+    copy(lines.join("\n"),b);
+  });
+}
+
+/* ---------- opportunity bars ---------- */
+function renderBars(){
+  const s=[...KW].sort((a,b)=>(b.score??0)-(a.score??0));
+  const col=v=>v>=70?"var(--green)":v>=40?"var(--amber)":"var(--red)";
+  document.getElementById("oppbars").innerHTML=s.map(k=>`
+    <div class="bar-row"><div class="bar-lbl" title="${esc(k.keyword)}">${esc(k.keyword)}</div>
+    <div class="bar-track"><div class="bar-fill" style="width:${k.score??0}%;background:${col(k.score??0)}"></div></div>
+    <div class="bar-val">${Math.round(k.score??0)}</div></div>`).join("")||`<div class="empty">No data.</div>`;
+}
+
+/* ---------- scatter ---------- */
+function renderScatter(){
+  const pts=VID.filter(v=>v.seo!=null&&v.pct!=null);
+  const el=document.getElementById("scatter");
+  if(!pts.length){el.innerHTML=`<div class="empty">No videos with both SEO and retention yet.</div>`;return}
+  const maxPct=Math.max(...pts.map(p=>p.pct),60);
+  el.innerHTML=pts.map(p=>{
+    const x=(p.seo/100)*100, y=(p.pct/maxPct)*100;
+    const c=p.seo>=70&&p.pct>=40?"var(--green)":p.seo<40||p.pct<30?"var(--red)":"var(--amber)";
+    return `<div class="dot" style="left:${x}%;bottom:${y}%;background:${c}" title="${esc(p.title)} — SEO ${p.seo}, ${p.pct.toFixed(0)}%"></div>`}).join("");
+}
+
+/* ---------- fix panel ---------- */
+function renderFix(){
+  const order={high:0,medium:1,low:2,none:3};
+  const q=(document.getElementById("fixfilter").value||"").toLowerCase();
+  let list=VID.filter(v=>!q||v.title.toLowerCase().includes(q));
+  list.sort((a,b)=>(order[a.priority]??3)-(order[b.priority]??3)||(a.seo??100)-(b.seo??100));
+  document.getElementById("fix-n").textContent=`${VID.filter(v=>v.analysis).length}/${VID.length} analyzed`;
+  document.getElementById("fixlist").innerHTML=list.map((v,i)=>{
+    const a=v.analysis;
+    const pri=a?a.priority:"none";
+    const sugs=a?a.suggestions:[];
+    return `<div class="fix-video" data-i="${i}">
+      <div class="fix-top">
+        <span class="pri ${pri}">${pri==="none"?"—":pri}</span>
+        <div><div class="fix-title clip">${esc(v.title)}</div>
+          <div class="fix-summary">${a?esc(a.summary):"Not analyzed yet — runs automatically on new/changed videos."}</div></div>
+        <span class="pill sm ${scoreCls(v.seo)}">${v.seo==null?"—":v.seo}</span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="fix-detail">${sugs.length?sugs.map(s=>`
+        <div class="sug ${esc(s.severity)}">
+          <div class="sug-h"><span class="sug-area">${esc(s.area)}</span> · ${esc(s.severity)}</div>
+          <div class="sug-issue">${esc(s.issue)}</div>
+          <div class="sug-fix"><b>Fix:</b> ${esc(s.fix)}</div>
+          ${s.example?`<div class="sug-ex">↳ ${esc(s.example)}<button class="copymini" data-ex="${esc(s.example)}">Copy</button></div>`:""}
+        </div>`).join(""):`<div class="sub" style="padding:4px 0 8px">${a?"No fixes — this one's dialed in.":"Publish or edit this video and the next daily run analyzes it."}</div>`}</div>
+    </div>`}).join("")||`<div class="empty">No videos.</div>`;
+  document.querySelectorAll(".fix-top").forEach(t=>t.onclick=()=>t.closest(".fix-video").classList.toggle("open"));
+  document.querySelectorAll(".copymini").forEach(b=>b.onclick=e=>{e.stopPropagation();copy(b.dataset.ex,b)});
+}
+
+/* ---------- tables ---------- */
+let ks="score",kd=-1;
+function renderKw(){
+  const q=(document.getElementById("kwfilter").value||"").toLowerCase();
+  let r=KW.filter(k=>!q||k.keyword.includes(q));
+  r.sort((a,b)=>{const x=a[ks],y=b[ks];return((x>y)-(x<y))*kd});
+  document.getElementById("kw-n").textContent=`${KW.length} tracked`;
+  document.getElementById("kwbody").innerHTML=r.map(k=>{
+    const bt=k.titles&&k.titles[0];
+    return `<tr><td style="font-weight:700">${esc(k.keyword)}</td><td>${pill(k.score,1)}</td>
+      <td>${Math.round(k.demand??0)}</td><td>${Math.round(k.comp??0)}</td><td>${Math.round(k.fit??0)}</td>
+      <td>${k.depth??"—"}</td><td class="clip">${bt?`<span class="pill sm ${scoreCls(bt.score)}">${bt.score}</span> ${esc(bt.title)}`:'<span class="sub">—</span>'}</td></tr>`}).join("");
+}
+let vs="seo",vd=1;
+function renderVid(){
+  let r=[...VID];r.sort((a,b)=>{const x=a[vs],y=b[vs];if(x==null)return 1;if(y==null)return -1;return((x>y)-(x<y))*vd});
+  document.getElementById("vid-n").textContent=`${VID.length} tracked`;
+  document.getElementById("vidbody").innerHTML=r.map(v=>`<tr>
+    <td class="clip" style="font-weight:700">${esc(v.title)}</td><td>${fmt(v.views)}</td>
+    <td>${v.pct==null?"—":`<span class="pill sm ${pctCls(v.pct)}">${v.pct.toFixed(0)}%</span>`}</td>
+    <td>${dur(v.dur)}</td><td>${v.subs==null?"—":(v.subs>0?"+":"")+v.subs}</td>
+    <td>${pill(v.seo,1)}</td><td class="sub">${esc(v.kw||"—")}</td></tr>`).join("");
+}
+document.querySelectorAll("#kwtable th[data-s]").forEach(th=>th.onclick=()=>{const k=th.dataset.s;if(ks===k)kd*=-1;else{ks=k;kd=k==="keyword"?1:-1}renderKw()});
+document.querySelectorAll("#vidtable th[data-v]").forEach(th=>th.onclick=()=>{const k=th.dataset.v;if(vs===k)vd*=-1;else{vs=k;vd=k==="title"?1:-1}renderVid()});
+document.getElementById("kwfilter").oninput=renderKw;
+document.getElementById("fixfilter").oninput=renderFix;
+
+/* ---------- load ---------- */
+async function load(){
+  try{
+    const res=await fetch(DATA_URL,{cache:"no-store"});if(!res.ok)throw new Error("HTTP "+res.status);
+    const snap=await res.json();
+    KW=Object.values(snap.keywords||{}).map(k=>({
+      keyword:k.keyword,score:k.scores?.composite??null,demand:k.scores?.demand,
+      comp:k.scores?.competition_inverted,fit:k.scores?.channel_fit,depth:k.autocomplete_depth,
+      titles:(k.titles||[]).slice().sort((a,b)=>b.score-a.score)}));
+    VID=Object.values((snap.own_channel||{}).videos||{}).map(v=>({
+      title:v.title||"(untitled)",views:v.views,
+      pct:v.analytics?.avg_view_percentage??null,dur:v.analytics?.avg_view_duration_sec??null,
+      subs:v.analytics?(v.analytics.subscribers_gained-v.analytics.subscribers_lost):null,
+      seo:v.seo?.composite??null,kw:v.seo?.matched_keyword??null,
+      analysis:v.analysis||null,priority:v.analysis?.priority||"none"}));
+    document.getElementById("meta").innerHTML=`Snapshot <strong>${esc(snap.date)}</strong> · ${KW.length} keywords · ${VID.length} videos · quota <strong>${snap.quota_units_used??"?"}</strong>/10,000`;
+    renderPQ();renderBars();renderScatter();renderFix();renderKw();renderVid();
+  }catch(e){
+    document.getElementById("meta").textContent="Could not load latest.json ("+e.message+")";
+    document.querySelectorAll(".card-body .empty").forEach(el=>el.textContent="Load failed — check GH_USER/GH_REPO/GH_BRANCH and that the Action committed data/latest.json.");
+  }
+}
+bindExpand();load();
+</script>
+</body>
+</html>

@@ -103,6 +103,30 @@ Settings → Pages → Deploy from branch → `main` / root. Your dashboard will
 - YouTube Analytics API (watch time/retention) uses a **separate** quota pool — doesn't touch the 10,000-unit Data API budget at all.
 - Ceiling enforced in code at 8,000; hard limit 10,000/day.
 
+## Command Center dashboard (insights.html)
+
+`insights.html` is the richer, card-based dashboard (the original `dashboard.html` stays as a simple fallback). Same four repo constants at the top, same `latest.json` data source — set `GH_USER`/`GH_REPO`/`GH_BRANCH` once and it works. Cards:
+
+- **What to Make Next** — your keywords ranked by Opportunity Score, each paired with its best pre-scored title and a Copy-for-pipeline button. Your next-video decision at a glance.
+- **Opportunity Scores** — bar chart of all keywords.
+- **Retention × SEO** — scatter of your videos; top-right = winning (high SEO + high retention).
+- **Fix Panel** — per-video Claude analysis: click a video to expand prioritized, specific suggestions (title rewrites, description fixes, tag additions, hook/retention notes) with copy buttons on the example rewrites.
+- **Keyword Opportunities** and **Your Videos** — full sortable/filterable tables.
+
+Click **⤢ Expand** on any card to focus it full-screen; Esc or click outside to close.
+
+## Claude Fix-Panel analysis (analyze.py)
+
+`analyze.py` powers the Fix Panel. It sends each video (title, description, tags, SEO flags, and retention data if available) to Claude and gets back prioritized, specific optimization suggestions.
+
+It's **change-detected**: each video's title+description+tags are hashed, and Claude is only called when that hash changes (new upload or an edit). Unchanged videos reuse cached suggestions at zero cost. So it runs in the daily cron and costs near-nothing most days — it only spends API budget the day you publish or edit something.
+
+- Runs automatically in the daily workflow (only on new/changed videos).
+- Force a full re-analysis of every video: Actions → Run workflow → check `force_analysis`.
+- Local one-off: `python scripts/analyze.py --video VIDEO_ID` or `--force`.
+
+Cost: roughly 1–2¢ per video analyzed, only when a video is new or changed.
+
 ## Files
 
 ```
@@ -116,11 +140,13 @@ scripts/titles.py            on-demand Claude title generation
 scripts/oauth_setup.py       ONE-TIME, run locally — gets the OAuth refresh token
 scripts/analytics.py         real watch time/retention/subs via YouTube Analytics API
 scripts/seo.py                video SEO score for your own uploads
+scripts/analyze.py           Claude fix-panel suggestions (change-detected, cheap daily)
 .github/workflows/daily.yml  daily cron + manual dispatch
 data/latest.json             rolling snapshot (dashboard reads this)
 data/snapshots/YYYY-MM-DD.json  daily history
 data/cache.json              video/channel stat cache
-dashboard.html               static dashboard (brand-styled, two tables)
+dashboard.html               simple static dashboard (brand-styled, two tables)
+insights.html                Command Center dashboard (cards, charts, fix panel)
 calibration.md               how to tune the score against vidIQ
 ```
 

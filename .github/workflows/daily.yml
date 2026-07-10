@@ -12,6 +12,10 @@ on:
       titles_keyword:
         description: "Optional: generate titles for one specific keyword"
         required: false
+      force_analysis:
+        description: "Re-run Claude fix analysis on ALL videos (not just changed ones)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -59,6 +63,16 @@ jobs:
 
       - name: Video SEO Score (own uploads)
         run: python scripts/seo.py
+
+      - name: Claude Fix-Panel analysis (only new/changed videos — cheap)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ "${{ inputs.force_analysis }}" = "true" ]; then
+            python scripts/analyze.py --force
+          else
+            python scripts/analyze.py
+          fi
 
       - name: Titles (on demand only)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_titles }}
