@@ -1,6 +1,6 @@
 {
   "date": "2026-07-10",
-  "generated_at": "2026-07-10T06:58:15Z",
+  "generated_at": "2026-07-10T07:36:16Z",
   "keywords": {
     "belly fat over 40": {
       "autocomplete_depth": 24,
@@ -9,8 +9,8 @@
         "channel_fit": 32.0,
         "competition_inverted": 39.6,
         "competition_raw": 60.4,
-        "composite": 46.2,
-        "demand": 66.8,
+        "composite": 46.4,
+        "demand": 67.3,
         "momentum": null,
         "weights_used": "no_trend"
       },
@@ -106,7 +106,7 @@
           "tags": [],
           "title": "Do This Every Morning To Lose Belly Fat #bellyfat #homeworkout #weightloss #menopause",
           "video_id": "2VIeobX8bW8",
-          "views": 760996
+          "views": 761053
         },
         {
           "age_days": 1218,
@@ -115,7 +115,7 @@
           "tags": [],
           "title": "I LOST MY MENOPAUSE BELLY!",
           "video_id": "bE2sptU4ibo",
-          "views": 6895606
+          "views": 6895654
         },
         {
           "age_days": 314,
@@ -149,7 +149,7 @@
           ],
           "title": "If You Want a Flat Stomach, DON'T Do This!",
           "video_id": "dZ4dQPFzuBk",
-          "views": 1837397
+          "views": 1837452
         },
         {
           "age_days": 320,
@@ -189,7 +189,7 @@
           "tags": [],
           "title": "3 Exercises To Lose Belly Fat At Home 🏠🔥",
           "video_id": "7bdK-Bb2LPk",
-          "views": 4658689
+          "views": 4658771
         },
         {
           "age_days": 971,
@@ -198,7 +198,7 @@
           "tags": [],
           "title": "Lose lower belly fat with this seated workout!",
           "video_id": "gHugh-Nvnd0",
-          "views": 4133730
+          "views": 4133807
         },
         {
           "age_days": 430,
@@ -207,7 +207,7 @@
           "tags": [],
           "title": "Lose Belly Fat In Menopause",
           "video_id": "Yjnjw3JwZcs",
-          "views": 188086
+          "views": 188088
         },
         {
           "age_days": 160,
@@ -216,7 +216,7 @@
           "tags": [],
           "title": "Fat loss over 40 ✨ #fatloss #over40",
           "video_id": "bLVutOifwno",
-          "views": 895852
+          "views": 896154
         },
         {
           "age_days": 669,
@@ -244,7 +244,7 @@
           ],
           "title": "How to lose belly fat",
           "video_id": "Y9I7TAyucvQ",
-          "views": 8011376
+          "views": 8011456
         },
         {
           "age_days": 839,
@@ -285,7 +285,7 @@
           ],
           "title": "Low Impact Sitting Belly Fat Workout For Fat Burning",
           "video_id": "9hWnQ-06LUE",
-          "views": 581976
+          "views": 582007
         },
         {
           "age_days": 643,
@@ -310,7 +310,7 @@
           ],
           "title": "The Real Reason Your Belly Fat Won't Budge After 40 (+ 3 Fixes)",
           "video_id": "INV5p1hOoLo",
-          "views": 87329
+          "views": 87351
         },
         {
           "age_days": 813,
@@ -335,7 +335,7 @@
           ],
           "title": "Dietitian's Secret to Losing Belly Fat in Your 40s 🔥",
           "video_id": "ZTP-rLqqko0",
-          "views": 315703
+          "views": 315707
         },
         {
           "age_days": 350,
@@ -454,7 +454,7 @@
           ],
           "title": "4 Best Tips To Lose Belly Fat After 40 (TIME TO LOSE IT!)",
           "video_id": "ZSUhNp8mbdU",
-          "views": 16795
+          "views": 16794
         },
         {
           "age_days": 311,
@@ -516,7 +516,7 @@
       "trend_momentum": null
     },
     "high protein snacks for weight loss": {
-      "autocomplete_depth": 51,
+      "autocomplete_depth": 50,
       "keyword": "high protein snacks for weight loss",
       "scores": {
         "channel_fit": 25.5,
@@ -538,7 +538,6 @@
         "healthy food for weight loss shots",
         "healthy high protein meals for weight loss",
         "healthy meals for weight loss on a budget",
-        "healthy protein snacks for weight loss",
         "healthy snacks for weight loss at night",
         "healthy snacks for weight loss evening",
         "healthy snacks for weight loss homemade",
@@ -559,7 +558,6 @@
         "high protein foods for weight gain in tamil",
         "high protein foods for weight gain tamil",
         "high protein foods for weight gain telugu",
-        "high protein foods for weight loss",
         "high protein foods for weight loss in kannada",
         "high protein foods for weight loss in tamil",
         "high protein foods for weight loss malayalam",
@@ -571,16 +569,69 @@
         "high protein meals for weight loss",
         "high protein meals for weight loss and muscle gain",
         "high protein meals for weight loss dinner",
+        "high protein meals for weight loss indian",
         "high protein meals for weight loss vegetarian",
-        "high protein meals weight loss",
         "high protein snacks for fat loss",
         "high protein snacks for weight loss veg",
         "low calorie high protein meals for weight loss",
         "low calorie high protein meals for weight loss tamil",
+        "protein snacks for weight loss",
         "simple high protein meals for weight loss",
         "what high protein foods for weight loss"
       ],
-      "titles": [],
+      "titles": [
+        {
+          "rationale": "'Easy' appears in top winners repeatedly. Age qualifier differentiates. 49 chars. High pattern match.",
+          "score": 86,
+          "title": "Easy High Protein Snacks for Weight Loss Over 40"
+        },
+        {
+          "rationale": "'Actually work' creates mild curiosity gap without hype. Age anchor. 48 chars. Number adds specificity.",
+          "score": 85,
+          "title": "5 High Protein Snacks That Actually Work Over 40"
+        },
+        {
+          "rationale": "Number adds specificity, 'after 40' resonates with target demo. 47 chars. Clean match to winners.",
+          "score": 84,
+          "title": "4 High Protein Snacks for Weight Loss After 40"
+        },
+        {
+          "rationale": "Parenthetical targets audience precisely. 'Fat loss' aligns with top performers. 51 chars.",
+          "score": 83,
+          "title": "High Protein Snacks for Fat Loss (Over 40 Edition)"
+        },
+        {
+          "rationale": "'Best' mirrors top-ranking title language. Age qualifier is the differentiator. 49 chars. Safe, strong match.",
+          "score": 83,
+          "title": "Best High Protein Snacks for Weight Loss Over 40"
+        },
+        {
+          "rationale": "Exact keyword match, age-specific differentiator, clear and direct. 44 chars. No fluff.",
+          "score": 82,
+          "title": "High Protein Snacks for Weight Loss Over 40"
+        },
+        {
+          "rationale": "Dual keyword hit (low calorie + high protein). 'Adults over 40' specific. 51 chars. Solid SERP match.",
+          "score": 81,
+          "title": "Low Calorie High Protein Snacks for Adults Over 40"
+        },
+        {
+          "rationale": "'Only' signals curation and simplicity — fits KISS brand voice. 46 chars. Strong pattern match.",
+          "score": 80,
+          "title": "The Only High Protein Snacks You Need Over 40"
+        },
+        {
+          "rationale": "'No gimmicks' reflects Dan's anti-hype brand voice. Curiosity gap for skeptical over-40 viewers. 50 chars.",
+          "score": 79,
+          "title": "High Protein Snacks for Weight Loss — No Gimmicks"
+        },
+        {
+          "rationale": "First-person POV builds trust and authenticity. 'Actually' signals honesty. 49 chars. Mild curiosity gap.",
+          "score": 77,
+          "title": "What I Actually Snack on for Weight Loss Over 40"
+        }
+      ],
+      "titles_generated_at": "2026-07-10T07:35:25Z",
       "top_videos": [
         {
           "age_days": 924,
@@ -641,7 +692,7 @@
           ],
           "title": "EASY HIGH PROTEIN SNACK For Weight Loss",
           "video_id": "fEa8qQzcmuo",
-          "views": 3039792
+          "views": 3039864
         },
         {
           "age_days": 2597,
@@ -674,7 +725,7 @@
           ],
           "title": "Low Calorie Snacks To Lose Weight & Stay Full",
           "video_id": "NFUdMheQeWk",
-          "views": 509044
+          "views": 509056
         },
         {
           "age_days": 1191,
@@ -683,7 +734,7 @@
           "tags": [],
           "title": "High protein, high fiber snack for fat loss #fatloss #highprotein",
           "video_id": "UpPWV4BgDo4",
-          "views": 44284
+          "views": 44280
         },
         {
           "age_days": 405,
@@ -731,7 +782,7 @@
           "tags": [],
           "title": "How to eat more food and lose more fat 🔥 #fatloss #highprotein #recipe #dinner",
           "video_id": "k08sZ-tZV2c",
-          "views": 987723
+          "views": 987765
         },
         {
           "age_days": 356,
@@ -778,7 +829,7 @@
           ],
           "title": "These Foods Have Almost ZERO Calories",
           "video_id": "zjIcjTSgsg8",
-          "views": 9195303
+          "views": 9195369
         },
         {
           "age_days": 1095,
@@ -829,7 +880,7 @@
           "tags": [],
           "title": "4 high protein snacks that made all the difference on my weight loss journey 👏🏼 #healthysnacks",
           "video_id": "OGrt-puuWWU",
-          "views": 59749
+          "views": 59761
         },
         {
           "age_days": 721,
@@ -883,7 +934,7 @@
           ],
           "title": "My Top 5 Low Calorie Snacks For Weight Loss",
           "video_id": "soxKPHDyPRs",
-          "views": 828462
+          "views": 828497
         },
         {
           "age_days": 170,
@@ -914,7 +965,7 @@
           ],
           "title": "HIGH PROTEIN SNACK IDEAS FOR WEIGHT LOSS!",
           "video_id": "mwiL9xsQ0HM",
-          "views": 35187
+          "views": 35191
         },
         {
           "age_days": 925,
@@ -923,7 +974,7 @@
           "tags": [],
           "title": "Here’s Some Of The Most Underrated Protein Snacks",
           "video_id": "FkYkNdZzKmY",
-          "views": 793200
+          "views": 793208
         },
         {
           "age_days": 1925,
@@ -979,7 +1030,7 @@
           "tags": [],
           "title": "NO Preparation Required. Try THESE Healthy Low Calorie Snacks",
           "video_id": "QMoAcZEeNhE",
-          "views": 221956
+          "views": 221998
         },
         {
           "age_days": 115,
@@ -1006,7 +1057,7 @@
           ],
           "title": "10 High Protein FOODS You Should Be Eating TO LOSE BELLY FAT FAST",
           "video_id": "DMvUgBSK2Jg",
-          "views": 317199
+          "views": 317218
         }
       ],
       "trend_momentum": null
@@ -1018,8 +1069,8 @@
         "channel_fit": 21.1,
         "competition_inverted": 42.7,
         "competition_raw": 57.3,
-        "composite": 42.9,
-        "demand": 57.8,
+        "composite": 43.0,
+        "demand": 58.0,
         "momentum": null,
         "weights_used": "no_trend"
       },
@@ -1068,7 +1119,7 @@
           ],
           "title": "How I Lost Weight WITHOUT CARDIO (50+ lbs!)",
           "video_id": "aYsfOt0wyhI",
-          "views": 222651
+          "views": 222652
         },
         {
           "age_days": 321,
@@ -1222,7 +1273,7 @@
           ],
           "title": "The #1 Method To Lose Belly Fat (NO CARDIO)",
           "video_id": "HLMoLbcpiew",
-          "views": 3172048
+          "views": 3172244
         },
         {
           "age_days": 1340,
@@ -1231,7 +1282,7 @@
           "tags": [],
           "title": "Do This HIIT Workout To Burn Fat 🔥",
           "video_id": "iyZeLxiLLtQ",
-          "views": 6550166
+          "views": 6550733
         },
         {
           "age_days": 605,
@@ -1264,7 +1315,7 @@
           ],
           "title": "Why Cardio Is Overrated For Fat Loss",
           "video_id": "ia9wmE5ltbk",
-          "views": 2168221
+          "views": 2168236
         },
         {
           "age_days": 656,
@@ -1295,7 +1346,7 @@
           ],
           "title": "How To Do Cardio (Without Losing Muscle)",
           "video_id": "3Y2vxKsaK9A",
-          "views": 9543053
+          "views": 9543114
         },
         {
           "age_days": 1319,
@@ -1347,7 +1398,7 @@
           ],
           "title": "90 day weight loss (5'4\" & under) NO diet, NO cardio! #petitewoman #weightlossjourney #fatloss",
           "video_id": "eayw4A1lUfE",
-          "views": 718895
+          "views": 718992
         },
         {
           "age_days": 507,
@@ -1359,7 +1410,7 @@
           ],
           "title": "Best exercise to lose weight fast !! 🔥😱",
           "video_id": "u6VDTpla4AY",
-          "views": 2811138
+          "views": 2811251
         },
         {
           "age_days": 1628,
@@ -1397,7 +1448,7 @@
           "tags": [],
           "title": "10 Cardio Exercises At Home",
           "video_id": "nIiYquMguZM",
-          "views": 6862403
+          "views": 6862796
         },
         {
           "age_days": 1159,
@@ -1415,7 +1466,7 @@
           "tags": [],
           "title": "HOW TO LOSE FAT WITHOUT COUNTING CALORIES 🔱",
           "video_id": "2_JCAqQ-uVY",
-          "views": 2527716
+          "views": 2527743
         },
         {
           "age_days": 532,
@@ -1424,7 +1475,7 @@
           "tags": [],
           "title": "Cardio Routine To Lose Fat But Not Muscle",
           "video_id": "A3GjoViL2mQ",
-          "views": 92750
+          "views": 92742
         },
         {
           "age_days": 1399,
@@ -1458,14 +1509,14 @@
       "trend_momentum": null
     },
     "metabolism after 40": {
-      "autocomplete_depth": 10,
+      "autocomplete_depth": 9,
       "keyword": "metabolism after 40",
       "scores": {
-        "channel_fit": 13.1,
+        "channel_fit": 13.2,
         "competition_inverted": 60.2,
         "competition_raw": 39.8,
-        "composite": 46.6,
-        "demand": 46.1,
+        "composite": 46.4,
+        "demand": 45.3,
         "momentum": null,
         "weights_used": "no_trend"
       },
@@ -1478,7 +1529,6 @@
         "how to increase metabolism after 40 female",
         "improving metabolism after 40",
         "increase metabolism after 40",
-        "increasing metabolism after 40",
         "speeding up metabolism after 40"
       ],
       "titles": [],
@@ -1621,7 +1671,7 @@
           ],
           "title": "Do THIS to Boost Your Metabolism, Lose Fat, & Feel Better Now With Dr. William Li",
           "video_id": "AjwaE0WozfE",
-          "views": 815816
+          "views": 815871
         },
         {
           "age_days": 841,
@@ -1829,7 +1879,7 @@
           ],
           "title": "How To Increase Your Metabolism (Eat More, Lose More)",
           "video_id": "g9QGQJ1ypp0",
-          "views": 5732156
+          "views": 5732229
         },
         {
           "age_days": 1142,
@@ -1894,20 +1944,19 @@
       "trend_momentum": null
     },
     "protein for adults over 40": {
-      "autocomplete_depth": 9,
+      "autocomplete_depth": 8,
       "keyword": "protein for adults over 40",
       "scores": {
-        "channel_fit": 15.6,
+        "channel_fit": 15.7,
         "competition_inverted": 52.9,
         "competition_raw": 47.1,
-        "composite": 41.8,
-        "demand": 40.6,
+        "composite": 41.5,
+        "demand": 39.8,
         "momentum": null,
         "weights_used": "no_trend"
       },
       "suggestions": [
         "protein after 40",
-        "protein after 50",
         "protein for old age",
         "protein for seniors to build muscle",
         "protein for women over 40",
@@ -1964,7 +2013,7 @@
           ],
           "title": "How Much Protein Do I REALLY Need? (Especially for Women 40+)",
           "video_id": "BJADc8oQMDQ",
-          "views": 18061
+          "views": 18062
         },
         {
           "age_days": 448,
@@ -2058,7 +2107,7 @@
           ],
           "title": "Avoid Muscle Loss After 40 | Protein Diet, Yoga & Strength Tips | Dr Hansaji",
           "video_id": "VxplH_BqqzU",
-          "views": 141357
+          "views": 141380
         },
         {
           "age_days": 464,
@@ -2067,7 +2116,7 @@
           "tags": [],
           "title": "Fuel Your Morning with my Favorite Protein Coffee Recipe",
           "video_id": "gnF1j_J0ERg",
-          "views": 1480306
+          "views": 1480337
         },
         {
           "age_days": 830,
@@ -2108,7 +2157,7 @@
           "tags": [],
           "title": "The easiest way to hit your protein goal?40g protein,20g fiber antiinflammatory meal",
           "video_id": "0vJ2Yth3su0",
-          "views": 178571
+          "views": 178578
         },
         {
           "age_days": 111,
@@ -2133,7 +2182,7 @@
           ],
           "title": "FULL DAY OF EATING (150g Protein!) | Women Over 40",
           "video_id": "wGuMkwwfSF8",
-          "views": 87152
+          "views": 87153
         },
         {
           "age_days": 2,
@@ -2142,7 +2191,7 @@
           "tags": [],
           "title": "Protein After 40: A Game Changer for Women",
           "video_id": "iNe18AY1QAs",
-          "views": 687989
+          "views": 693343
         },
         {
           "age_days": 368,
@@ -2178,7 +2227,7 @@
           ],
           "title": "I Ranked The Best Protein Foods On The Planet for Men Over 40",
           "video_id": "BwyrP3GdR1c",
-          "views": 17671
+          "views": 17683
         },
         {
           "age_days": 1643,
@@ -2187,7 +2236,7 @@
           "tags": [],
           "title": "High protein meal ideas weight loss over 40 women",
           "video_id": "Ddjyxqd0K0I",
-          "views": 84700
+          "views": 84699
         },
         {
           "age_days": 524,
@@ -2232,7 +2281,7 @@
           ],
           "title": "Do Older Adults Really Need More Protein? New Scientific Studies",
           "video_id": "calC-qn5rt0",
-          "views": 220124
+          "views": 220125
         },
         {
           "age_days": 56,
@@ -2251,7 +2300,7 @@
           ],
           "title": "What I Eat in a Week (High Protein Diet Over 40)",
           "video_id": "eQnKZCDeAig",
-          "views": 5006
+          "views": 5010
         },
         {
           "age_days": 345,
@@ -2283,7 +2332,7 @@
           ],
           "title": "Dr. Stacy Sims’ Nutrition Guide for Women 40+ to Boost Energy, Longevity & Gut Health",
           "video_id": "0O8nzDjds5A",
-          "views": 117666
+          "views": 117677
         },
         {
           "age_days": 1042,
@@ -2322,14 +2371,14 @@
       "trend_momentum": null
     },
     "simple meal plan for weight loss": {
-      "autocomplete_depth": 40,
+      "autocomplete_depth": 41,
       "keyword": "simple meal plan for weight loss",
       "scores": {
         "channel_fit": 20.0,
         "competition_inverted": 54.1,
         "competition_raw": 45.9,
-        "composite": 55.9,
-        "demand": 82.7,
+        "composite": 56.4,
+        "demand": 84.4,
         "momentum": null,
         "weights_used": "no_trend"
       },
@@ -2364,6 +2413,7 @@
         "meal ideas for weight loss and muscle gain",
         "simple daily meal plan for weight loss",
         "simple diet chart for weight loss in 7 days",
+        "simple diet meals for weight loss",
         "simple diet plan for weight loss",
         "simple diet plan for weight loss at home",
         "simple dinner ideas for weight loss",
@@ -2375,7 +2425,59 @@
         "simple weight loss meal plan",
         "simple weight loss meals"
       ],
-      "titles": [],
+      "titles": [
+        {
+          "rationale": "Personal proof trigger mirrors '50 pounds' winner, age-specific, 46 chars.",
+          "score": 88,
+          "title": "I Lost Weight After 40 Eating This Every Week"
+        },
+        {
+          "rationale": "Mirrors '7 days' and '21 day' winners, keyword-rich, age-specific, 50 chars.",
+          "score": 87,
+          "title": "7-Day Simple Meal Plan for Losing Weight After 40"
+        },
+        {
+          "rationale": "Matches '5 day' and calorie-plan patterns, age-targeted, specific, 47 chars.",
+          "score": 86,
+          "title": "Simple 5-Day Meal Plan for Weight Loss Over 40"
+        },
+        {
+          "rationale": "Strong curiosity gap with 'only,' age-targeted, anti-hype framing, 42 chars.",
+          "score": 85,
+          "title": "The Only Meal Plan Over-40s Actually Need"
+        },
+        {
+          "rationale": "Stacks two strong sub-keywords (high-protein, meal plan), age-targeted, 54 chars.",
+          "score": 84,
+          "title": "Simple High-Protein Meal Plan for Weight Loss Over 40"
+        },
+        {
+          "rationale": "Gender-specific niche, keyword present, KISS reference feels natural, 55 chars.",
+          "score": 83,
+          "title": "Weight Loss Meal Plan for Men Over 40 (Keep It Simple)"
+        },
+        {
+          "rationale": "Hits keyword exactly, adds age specificity for target audience, clear and direct, 42 chars.",
+          "score": 82,
+          "title": "Simple Meal Plan for Weight Loss After 40"
+        },
+        {
+          "rationale": "Conversational, age-anchored, mild curiosity gap without false promise, 47 chars.",
+          "score": 81,
+          "title": "Eat This Way After 40 and the Weight Comes Off"
+        },
+        {
+          "rationale": "Anti-hype voice, curiosity gap, imperative CTA, 46 chars.",
+          "score": 80,
+          "title": "Stop Overcomplicating Meals — Do This Instead"
+        },
+        {
+          "rationale": "Matches 'how to' and 'dietitian Q&A' patterns, 'actually works' adds credibility without hype, 52 chars.",
+          "score": 79,
+          "title": "How to Build a Simple Meal Plan That Actually Works"
+        }
+      ],
+      "titles_generated_at": "2026-07-10T07:35:37Z",
       "top_videos": [
         {
           "age_days": 1747,
@@ -2406,7 +2508,7 @@
           ],
           "title": "Build The Perfect Meal Plan To Get Ripped (4 Easy Steps)",
           "video_id": "B5a03YsCgD0",
-          "views": 1171157
+          "views": 1171180
         },
         {
           "age_days": 2163,
@@ -2426,7 +2528,7 @@
           ],
           "title": "21 Day Clean Eating Meal Plan 1500 Calorie RD Approved",
           "video_id": "8l4230iTOBE",
-          "views": 227947
+          "views": 227944
         },
         {
           "age_days": 1183,
@@ -2443,7 +2545,7 @@
           ],
           "title": "SIMPLE and EASY Meal Prep Ideas for Women for Weight Loss",
           "video_id": "6dDCYIvP0yY",
-          "views": 968251
+          "views": 968269
         },
         {
           "age_days": 2884,
@@ -2484,7 +2586,7 @@
           ],
           "title": "1-Day 1,200-Calorie Winter Weight-Loss Meal Plan | EatingWell",
           "video_id": "gLCYFCPThmg",
-          "views": 554702
+          "views": 554695
         },
         {
           "age_days": 1205,
@@ -2502,7 +2604,7 @@
           "tags": [],
           "title": "Mediterranean Diet Meal Plan | 7 days",
           "video_id": "AjAYl4K-Enw",
-          "views": 965295
+          "views": 965325
         },
         {
           "age_days": 2751,
@@ -2530,7 +2632,7 @@
           ],
           "title": "Diabetes Easy 7 Day Meal Plan From Our Registered Dietitian",
           "video_id": "7pdHHSkTJKI",
-          "views": 98362
+          "views": 98368
         },
         {
           "age_days": 2272,
@@ -2597,7 +2699,7 @@
           ],
           "title": "Healthy Recipes for Weight loss |  High Protein Foods | Diet Plan for Weight loss | Healthy Recipes",
           "video_id": "mJ1iIiVV0mM",
-          "views": 584818
+          "views": 584841
         },
         {
           "age_days": 441,
@@ -2606,7 +2708,7 @@
           "tags": [],
           "title": "Healthy & Easy High Protein Meal Plan Build Muscle #highproteinmeals #buildmuscle #burnfat #mealplan",
           "video_id": "Lx3BDQKon0g",
-          "views": 1790751
+          "views": 1790925
         },
         {
           "age_days": 1396,
@@ -2615,7 +2717,7 @@
           "tags": [],
           "title": "How to Balance your Meals (Dietitian Nutritionist tip)",
           "video_id": "Ic5ndbk4GKE",
-          "views": 1050491
+          "views": 1050544
         },
         {
           "age_days": 986,
@@ -2624,7 +2726,7 @@
           "tags": [],
           "title": "Making a 5 day weight loss meal prep for $21 #food #cooking #weightloss #mealprep",
           "video_id": "lz0ndvU9HKw",
-          "views": 1580218
+          "views": 1580292
         },
         {
           "age_days": 858,
@@ -2659,7 +2761,7 @@
           ],
           "title": "Easy Healthy Meal Prep for Weight Loss",
           "video_id": "UbQCpQR97ew",
-          "views": 1342555
+          "views": 1342618
         },
         {
           "age_days": 962,
@@ -2694,7 +2796,7 @@
           ],
           "title": "How to lose belly fat and reduce weight fast diet plan",
           "video_id": "hjzLmLM7r0s",
-          "views": 259440
+          "views": 259439
         },
         {
           "age_days": 1110,
@@ -2718,7 +2820,7 @@
           ],
           "title": "Calorie Deficit Hacks",
           "video_id": "9bscSY_FOOA",
-          "views": 2223214
+          "views": 2223323
         },
         {
           "age_days": 1777,
@@ -2737,7 +2839,7 @@
           ],
           "title": "1600 Calorie Full Day of Eating with Low Carb Recipes",
           "video_id": "L87vatMW9vk",
-          "views": 500685
+          "views": 500659
         }
       ],
       "trend_momentum": null
@@ -2749,8 +2851,8 @@
         "channel_fit": 27.9,
         "competition_inverted": 45.5,
         "competition_raw": 54.5,
-        "composite": 49.8,
-        "demand": 71.6,
+        "composite": 50.0,
+        "demand": 72.3,
         "momentum": null,
         "weights_used": "no_trend"
       },
@@ -2790,7 +2892,59 @@
         "sounds for sleep and weight loss",
         "tea for sleep and weight loss"
       ],
-      "titles": [],
+      "titles": [
+        {
+          "rationale": "Strong curiosity gap, actionable hint, over-40 specificity, matches 'How Sleep Affects Fat Loss' winner pattern. 52 chars.",
+          "score": 88,
+          "title": "How Sleep Wrecks Fat Loss After 40 (Fix This First)"
+        },
+        {
+          "rationale": "High curiosity gap, speaks directly to frustrated over-40 viewer, sleep revealed as the answer. 53 chars.",
+          "score": 87,
+          "title": "Why You Can't Lose Weight Over 40 (Check Your Sleep)"
+        },
+        {
+          "rationale": "'Real Reason' creates curiosity gap, mirrors science-based winner titles, strong over-40 qualifier. 50 chars.",
+          "score": 86,
+          "title": "The Real Reason Sleep Affects Weight Loss After 40"
+        },
+        {
+          "rationale": "Mirrors 'Is Poor Sleep Ruining' pattern but stronger language, direct over-40 hook, clear stakes. 48 chars.",
+          "score": 85,
+          "title": "Poor Sleep Is Killing Your Weight Loss After 40"
+        },
+        {
+          "rationale": "'Mistakes' framing is a proven YouTube pattern, over-40 niche, implies fixable problem. 47 chars.",
+          "score": 84,
+          "title": "Sleep Mistakes That Stall Weight Loss After 40"
+        },
+        {
+          "rationale": "Keyword match, KISS-aligned language, over-40 niche, 'simple truth' signals no-hype tone. 45 chars.",
+          "score": 83,
+          "title": "Sleep and Fat Loss Over 40: The Simple Truth"
+        },
+        {
+          "rationale": "Specific question viewers are Googling, over-40 hook, matches 'How Does Sleep Affect Fat Loss' winner pattern. 49 chars.",
+          "score": 83,
+          "title": "How Much Sleep Do You Need to Lose Fat After 40?"
+        },
+        {
+          "rationale": "Mirrors top-ranking phrasing, adds over-40 specificity, curiosity gap via 'what actually works' implies others don't. 50 chars.",
+          "score": 82,
+          "title": "Sleep and Weight Loss Over 40: What Actually Works"
+        },
+        {
+          "rationale": "Action-oriented, paired benefit structure, over-40 audience called out, plain-spoken. 53 chars.",
+          "score": 81,
+          "title": "Fix Your Sleep, Fix Your Weight: A Guide for Over 40"
+        },
+        {
+          "rationale": "Directly challenges hypnosis-heavy competitors, anti-hype tone fits Dan's brand, question hooks viewer. 54 chars.",
+          "score": 80,
+          "title": "Lose Weight While You Sleep? Here's the Honest Answer"
+        }
+      ],
+      "titles_generated_at": "2026-07-10T07:36:02Z",
       "top_videos": [
         {
           "age_days": 854,
@@ -2831,7 +2985,7 @@
           ],
           "title": "Sleep Hypnosis for Weight Loss ~ Reprogram Your Mind & Body to Naturally Lose Weight (STRONG)",
           "video_id": "-8fjuYI0ZIk",
-          "views": 2711863
+          "views": 2711956
         },
         {
           "age_days": 2747,
@@ -2900,7 +3054,7 @@
           ],
           "title": "5 Reasons Why Sleep Helps You Lose Weight",
           "video_id": "IHhaRxCZJ6M",
-          "views": 27429
+          "views": 27430
         },
         {
           "age_days": 613,
@@ -2927,7 +3081,7 @@
           ],
           "title": "Rapid WEIGHT LOSS Success with Sleep Hypnosis",
           "video_id": "O3-6WMUJ8jk",
-          "views": 775939
+          "views": 776008
         },
         {
           "age_days": 1427,
@@ -2986,7 +3140,7 @@
           ],
           "title": "Lose Weight as you Sleep Hypnosis, Reprogram Yourself for Healthy Foods & Stop wanting Junk Food",
           "video_id": "0EaZYRPE_pQ",
-          "views": 1468710
+          "views": 1468764
         },
         {
           "age_days": 1719,
@@ -3047,7 +3201,7 @@
           ],
           "title": "How Does Sleep Affect Fat Loss?",
           "video_id": "D3y5o-enLsM",
-          "views": 37981
+          "views": 37985
         },
         {
           "age_days": 1172,
@@ -3076,7 +3230,7 @@
           ],
           "title": "The Impact of Sleep on Weight Loss (12 Tips for Improving Your SLEEP)",
           "video_id": "ZhkQYw4T6ro",
-          "views": 2708
+          "views": 2709
         },
         {
           "age_days": 1275,
@@ -3094,7 +3248,7 @@
           "tags": [],
           "title": "The ONLY Legit Ways to Lose Fat While Sleeping (the rest is BS)",
           "video_id": "oYntYBifmuI",
-          "views": 1006684
+          "views": 1006693
         },
         {
           "age_days": 865,
@@ -3126,7 +3280,7 @@
           ],
           "title": "Hypnosis For Deep Sleep | Weight Loss & Removing Blocks",
           "video_id": "5UMSYoiAugM",
-          "views": 376843
+          "views": 376910
         },
         {
           "age_days": 1858,
@@ -3211,7 +3365,7 @@
           "tags": [],
           "title": "Sleep and Weight Loss - Can a Good Night's Rest Help you Lose Weight? #weightloss #bariatricsurgery",
           "video_id": "W449JpuGcHI",
-          "views": 3605
+          "views": 3608
         },
         {
           "age_days": 1971,
@@ -3260,14 +3414,14 @@
       "trend_momentum": null
     },
     "strength training over 40": {
-      "autocomplete_depth": 27,
+      "autocomplete_depth": 28,
       "keyword": "strength training over 40",
       "scores": {
-        "channel_fit": 28.4,
+        "channel_fit": 28.3,
         "competition_inverted": 44.6,
         "competition_raw": 55.4,
-        "composite": 47.0,
-        "demand": 63.4,
+        "composite": 47.4,
+        "demand": 64.9,
         "momentum": null,
         "weights_used": "no_trend"
       },
@@ -3290,6 +3444,7 @@
         "strength training for women over 40 beginners",
         "strength training for women over 40 indian",
         "strength training for women over 40 no equipment",
+        "strength training in your 40s",
         "strength training over 40 female",
         "strength training over 40 female at home",
         "strength training over 40 male",
@@ -3300,7 +3455,59 @@
         "weight training over 40",
         "weight training workout over 40 female"
       ],
-      "titles": [],
+      "titles": [
+        {
+          "rationale": "Mirrors top-ranking question format exactly, 'Real Answer' creates curiosity gap and signals no-BS tone, 51 chars.",
+          "score": 85,
+          "title": "How Heavy Should You Lift After 40? (Real Answer)"
+        },
+        {
+          "rationale": "Injury prevention angle matches top titles, honest voice, strong curiosity gap on 'wrecking yourself,' 55 chars.",
+          "score": 84,
+          "title": "How to Build Muscle After 40 Without Wrecking Yourself"
+        },
+        {
+          "rationale": "Strong curiosity gap, mirrors 'Women Over 40 Get This Wrong' winner pattern, adapted for men, 54 chars.",
+          "score": 83,
+          "title": "Why Most Guys Over 40 Train Wrong (And How to Fix It)"
+        },
+        {
+          "rationale": "Strong pattern match with winners, implied contrast against hype, clear and specific, 47 chars.",
+          "score": 82,
+          "title": "Strength Training Over 40: What Actually Works"
+        },
+        {
+          "rationale": "Mistake-format titles drive clicks, numbered list, male audience targeted, strong pattern match, 53 chars.",
+          "score": 81,
+          "title": "3 Strength Training Mistakes Men Over 40 Keep Making"
+        },
+        {
+          "rationale": "Numbered-list format mirrors top performers, targets men specifically, specificity boosts CTR, 46 chars.",
+          "score": 80,
+          "title": "The 4 Strength Rules Every Man Over 40 Needs"
+        },
+        {
+          "rationale": "Anti-hype hook aligns with Dan's voice, curiosity gap implied, clean keyword integration, 53 chars.",
+          "score": 79,
+          "title": "Strength Training After 40: Stop Overcomplicating It"
+        },
+        {
+          "rationale": "Clear keyword match, anti-hype tone fits Dan's brand, under 60 chars, mild curiosity gap from the simplicity promise.",
+          "score": 78,
+          "title": "Strength Training Over 40: Keep It Simple"
+        },
+        {
+          "rationale": "Mirrors 'How to Start' winner pattern, 'no-nonsense' signals Dan's brand voice clearly, 53 chars.",
+          "score": 77,
+          "title": "Start Strength Training Over 40: A No-Nonsense Guide"
+        },
+        {
+          "rationale": "Integrates DESS framework subtly, clear and grounded, slightly lower score as curiosity gap is modest, 51 chars.",
+          "score": 76,
+          "title": "Strength Over 40: Diet, Sleep & Lifting Simplified"
+        }
+      ],
+      "titles_generated_at": "2026-07-10T07:36:16Z",
       "top_videos": [
         {
           "age_days": 400,
@@ -3319,7 +3526,7 @@
           ],
           "title": "How Women Over 40 Should Workout for Best Results & Injury Prevention | Dr. Stacy Sims w Mel Robbins",
           "video_id": "GrJxl6F0D2E",
-          "views": 1021964
+          "views": 1021991
         },
         {
           "age_days": 537,
@@ -3328,7 +3535,7 @@
           "tags": [],
           "title": "Strength Training for Women over 40 - Should You Use Light Weights?",
           "video_id": "HQBM4l-k95k",
-          "views": 30475
+          "views": 30479
         },
         {
           "age_days": 991,
@@ -3356,7 +3563,7 @@
           ],
           "title": "Strength training for fat loss over 40 - a complete guide",
           "video_id": "e_ybk2y8Y9M",
-          "views": 112383
+          "views": 112394
         },
         {
           "age_days": 1187,
@@ -3365,7 +3572,7 @@
           "tags": [],
           "title": "Ladies Over 40 You Need To Do Weights!",
           "video_id": "fdIGcVmIc_c",
-          "views": 2203245
+          "views": 2203348
         },
         {
           "age_days": 1990,
@@ -3493,7 +3700,7 @@
           "tags": [],
           "title": "Strength workouts with weights for women over 40 #dumbbells #weighttraining",
           "video_id": "heqcZWTl_yI",
-          "views": 1502756
+          "views": 1502869
         },
         {
           "age_days": 1415,
@@ -3598,7 +3805,7 @@
           ],
           "title": "Full Body T-Boosting Workout For Men Over 40 (BUILD MUSCLE AND LOSE FAT!)",
           "video_id": "1pj1_LYgYvM",
-          "views": 374249
+          "views": 374241
         },
         {
           "age_days": 484,
@@ -3614,7 +3821,7 @@
           ],
           "title": "The Most Efficient Way to Train for Women 40+ | Dr. Stacy Sims on Andrew Huberman Podcast",
           "video_id": "4T8FKevpTBk",
-          "views": 708742
+          "views": 708757
         },
         {
           "age_days": 595,
@@ -3623,7 +3830,7 @@
           "tags": [],
           "title": "How to Start Strength Training & Weight Lifting for Women over 40",
           "video_id": "b9XjMlPUKPk",
-          "views": 79591
+          "views": 79594
         },
         {
           "age_days": 1330,
@@ -3659,7 +3866,7 @@
           ],
           "title": "6 Best Exercises for Men Over 40",
           "video_id": "I4QkzdFd_o8",
-          "views": 796947
+          "views": 796948
         },
         {
           "age_days": 919,
@@ -3698,7 +3905,7 @@
           ],
           "title": "Strength training over 40 female at home workout no equipment",
           "video_id": "U8yzdITfdx4",
-          "views": 115966
+          "views": 115965
         }
       ],
       "trend_momentum": null
@@ -3711,7 +3918,7 @@
         "competition_inverted": 59.7,
         "competition_raw": 40.3,
         "composite": 44.7,
-        "demand": 38.8,
+        "demand": 38.9,
         "momentum": null,
         "weights_used": "no_trend"
       },
@@ -3747,7 +3954,7 @@
           ],
           "title": "Stress Can Make You Fat | The Cortisol & Belly Fat Connection and How to Control It",
           "video_id": "Yix6591mNjE",
-          "views": 12224
+          "views": 12221
         },
         {
           "age_days": 819,
@@ -3856,7 +4063,7 @@
           "views": 47253
         },
         {
-          "age_days": 908,
+          "age_days": 909,
           "channel_subs": 111000,
           "channel_title": "Dr. Taz MD",
           "tags": [
@@ -3957,7 +4164,7 @@
           ],
           "title": "Cortisol Belly: Stress, Trauma, and Your Waistline",
           "video_id": "L58UafHE6Dg",
-          "views": 2578
+          "views": 2579
         },
         {
           "age_days": 1112,
@@ -3990,7 +4197,7 @@
           ],
           "title": "Unraveling the Role of Cortisol in Belly Fat Accumulation: A Guide by Dr. Pal",
           "video_id": "Hqp-xDj4PdA",
-          "views": 3815205
+          "views": 3815209
         },
         {
           "age_days": 3101,
@@ -4066,7 +4273,7 @@
           ],
           "title": "#1 Neuroscientist: Truth About Stress, Belly Fat, Coffee, Alcohol, Diet & Journaling -Dr. Tara Swart",
           "video_id": "Q3LAqTqqrMA",
-          "views": 597567
+          "views": 597565
         },
         {
           "age_days": 4045,
@@ -4088,7 +4295,7 @@
           "tags": [],
           "title": "The Truth About Cortisol & Belly Fat (And How to Fix It Naturally)",
           "video_id": "64xF1hPvxeg",
-          "views": 135352
+          "views": 135355
         },
         {
           "age_days": 2300,
@@ -4162,7 +4369,7 @@
           "tags": [],
           "title": "High Cortisol and Belly Fat: Hidden Connection Explained",
           "video_id": "HFx3du0bDLM",
-          "views": 6162
+          "views": 6163
         },
         {
           "age_days": 1176,
@@ -4183,14 +4390,14 @@
       "trend_momentum": null
     },
     "weight loss after 40": {
-      "autocomplete_depth": 31,
+      "autocomplete_depth": 29,
       "keyword": "weight loss after 40",
       "scores": {
         "channel_fit": 32.3,
         "competition_inverted": 55.5,
         "competition_raw": 44.5,
-        "composite": 52.9,
-        "demand": 62.3,
+        "composite": 52.5,
+        "demand": 60.9,
         "momentum": null,
         "weights_used": "no_trend"
       },
@@ -4216,9 +4423,7 @@
         "weight loss after 40 women",
         "weight loss after 40 years old",
         "weight loss after 45",
-        "weight loss after 45 female",
         "weight loss after 45 male",
-        "weight loss after 50",
         "weight loss after age 40",
         "weight loss exercise after 40",
         "weight loss exercises at home after 40",
@@ -4227,7 +4432,59 @@
         "weight loss transformation after 40",
         "yoga for weight loss after 40"
       ],
-      "titles": [],
+      "titles": [
+        {
+          "rationale": "Strong specificity, mirrors '6 Foundations' and '5 Reasons' patterns. Plain-spoken. 52 chars.",
+          "score": 85,
+          "title": "Weight Loss After 40: The Only 4 Things That Matter"
+        },
+        {
+          "rationale": "Curiosity gap, mirrors '5 Reasons You Can't Lose Weight' winner. Direct. 50 chars.",
+          "score": 84,
+          "title": "The Real Reason You're Not Losing Weight After 40"
+        },
+        {
+          "rationale": "Mirrors 'How I would start fat loss' winner. Personal, grounded, no hype. 51 chars.",
+          "score": 83,
+          "title": "How I'd Restart Weight Loss After 40 (Simple Plan)"
+        },
+        {
+          "rationale": "Curiosity gap + validates audience frustration without hype. Mirrors 'What Nobody Tells You' pattern. 54 chars.",
+          "score": 82,
+          "title": "Why Weight Loss After 40 Feels Harder (It's Not You)"
+        },
+        {
+          "rationale": "K.I.S.S. brand voice baked in. Anti-hype positioning. Clear and punchy. 47 chars.",
+          "score": 80,
+          "title": "Weight Loss After 40: Stop Overcomplicating It"
+        },
+        {
+          "rationale": "Specific contrast beats vague promises. Mirrors 'without counting or fasting' winner. 53 chars.",
+          "score": 79,
+          "title": "Losing Weight After 40 Without Starving or Sprinting"
+        },
+        {
+          "rationale": "Implied contrast with gimmicks, clean curiosity gap, plain tone. 45 chars.",
+          "score": 78,
+          "title": "What Actually Works for Weight Loss After 40"
+        },
+        {
+          "rationale": "Fills a gap — most winners target women. Mirrors 'What Nobody Tells You' pattern. 44 chars.",
+          "score": 77,
+          "title": "Weight Loss After 40: What Nobody Tells Men"
+        },
+        {
+          "rationale": "Mirrors 'menopause weight loss in 3 simple steps' pattern. Accessible. 41 chars.",
+          "score": 76,
+          "title": "3 Simple Shifts for Weight Loss After 40"
+        },
+        {
+          "rationale": "Brand-specific, builds IP recognition, clear. Slightly lower score — framework name needs context. 44 chars.",
+          "score": 72,
+          "title": "The DESS Framework for Weight Loss After 40"
+        }
+      ],
+      "titles_generated_at": "2026-07-10T07:35:49Z",
       "top_videos": [
         {
           "age_days": 589,
@@ -4245,7 +4502,7 @@
           "tags": [],
           "title": "Fat loss over 40 ✨ #fatloss #over40",
           "video_id": "bLVutOifwno",
-          "views": 895852
+          "views": 896154
         },
         {
           "age_days": 408,
@@ -4254,7 +4511,7 @@
           "tags": [],
           "title": "How to Eat to Lose Fat (For Women Over 40) Without Counting or Fasting",
           "video_id": "JBz3ma5cotg",
-          "views": 161637
+          "views": 161636
         },
         {
           "age_days": 1312,
@@ -4313,7 +4570,7 @@
           ],
           "title": "5 Ways To Start Losing Weight After 40! (Perimenopause & Menopause) | Cynthia Thurlow",
           "video_id": "N03HC883x_w",
-          "views": 14816
+          "views": 14815
         },
         {
           "age_days": 272,
@@ -4426,7 +4683,7 @@
           "tags": [],
           "title": "One move after dinner for fast weight loss.",
           "video_id": "iLKTnU2iY6M",
-          "views": 715429
+          "views": 715450
         },
         {
           "age_days": 1457,
@@ -4448,7 +4705,7 @@
           ],
           "title": "Intermittent Fasting For Women | Lose Weight After 40 | Doctor Tries Intermittent Fasting",
           "video_id": "2GphwUR5Ul8",
-          "views": 674571
+          "views": 674573
         },
         {
           "age_days": 2823,
@@ -4490,7 +4747,7 @@
           "tags": [],
           "title": "High protein meal ideas weight loss over 40 women",
           "video_id": "Ddjyxqd0K0I",
-          "views": 84700
+          "views": 84699
         },
         {
           "age_days": 1641,
@@ -4499,7 +4756,7 @@
           "tags": [],
           "title": "How to lose weight over 40 & female",
           "video_id": "HuTeZ2MB52o",
-          "views": 93083
+          "views": 93086
         },
         {
           "age_days": 1958,
@@ -4541,7 +4798,7 @@
           "tags": [],
           "title": "Menopause weight loss in 3 simple steps",
           "video_id": "MNz4Ny8SA8Q",
-          "views": 159063
+          "views": 159089
         },
         {
           "age_days": 496,
@@ -4989,6 +5246,6 @@
       }
     }
   },
-  "quota_units_used": 1011,
+  "quota_units_used": 8,
   "schema_version": 1
 }
