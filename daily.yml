@@ -1,0 +1,117 @@
+name: Daily keyword snapshot
+
+on:
+  schedule:
+    - cron: "0 16 * * *"   # 16:00 UTC = 6:00 AM Hawaii (HST, no DST)
+  workflow_dispatch:
+    inputs:
+      run_titles:
+        description: "Also generate Claude title candidates (costs API tokens)"
+        type: boolean
+        default: false
+      titles_keyword:
+        description: "Optional: generate titles for one specific keyword"
+        required: false
+      force_analysis:
+        description: "Re-run Claude fix analysis on ALL videos (not just changed ones)"
+        type: boolean
+        default: false
+      run_script:
+        description: "Generate a segment-based script (costs API tokens)"
+        type: boolean
+        default: false
+      script_keyword:
+        description: "Optional: keyword to script (default = top Opportunity Score)"
+        required: false
+      script_format:
+        description: "Script format"
+        type: choice
+        options: [short, long]
+        default: short
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install google-api-python-client pytrends requests
+
+      - name: Collect (YouTube Data API)
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+          OWN_CHANNEL_HANDLE: DanSmrtCoaching
+        run: python scripts/collect.py
+
+      - name: Autocomplete depth
+        run: python scripts/autocomplete.py
+
+      - name: Google Trends (optional — never fails the run)
+        continue-on-error: true
+        run: python scripts/trends.py
+
+      - name: Opportunity Score
+        run: python scripts/score.py
+
+      - name: Channel Analytics (watch time, retention — skips gracefully until OAuth is set up)
+        env:
+          YT_OAUTH_CLIENT_ID: ${{ secrets.YT_OAUTH_CLIENT_ID }}
+          YT_OAUTH_CLIENT_SECRET: ${{ secrets.YT_OAUTH_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python scripts/analytics.py
+
+      - name: Video SEO Score (own uploads)
+        run: python scripts/seo.py
+
+      - name: Claude Fix-Panel analysis (only new/changed videos — cheap)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ "${{ inputs.force_analysis }}" = "true" ]; then
+            python scripts/analyze.py --force
+          else
+            python scripts/analyze.py
+          fi
+
+      - name: Titles (on demand only)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_titles }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "${{ inputs.titles_keyword }}" ]; then
+            python scripts/titles.py --keyword "${{ inputs.titles_keyword }}"
+          else
+            python scripts/titles.py --top 5
+          fi
+
+      - name: Script (on demand only)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_script }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "${{ inputs.script_keyword }}" ]; then
+            python scripts/script.py --keyword "${{ inputs.script_keyword }}" --format "${{ inputs.script_format }}"
+          else
+            python scripts/script.py --format "${{ inputs.script_format }}"
+          fi
+
+      - name: Commit snapshot
+        run: |
+          git config user.name "snapshot-bot"
+          git config user.email "actions@github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "snapshot $(date -u +%F)"
+          git push
