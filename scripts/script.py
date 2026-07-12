@@ -66,7 +66,17 @@ SYSTEM = (
     "- B-roll cues anchor to a SPECIFIC SPOKEN PHRASE that appears verbatim in "
     "that segment's script text. Never to a timestamp. B-roll style is 'witty "
     "grimace energy' — theatrical, slightly comedic, impossible physics preferred "
-    "over literal or clinical visuals.\n\n"
+    "over literal or clinical visuals.\n"
+    "- Every b-roll cue carries a PURPOSE, exactly one of: proof (visual evidence "
+    "for a claim), emphasis (lands the key moment harder), example (shows the "
+    "thing being named), transition (bridges two ideas), pacing (breaks visual "
+    "monotony). If the only honest purpose is 'pacing', reconsider whether the "
+    "cue earns its place.\n"
+    "- If a line has no visual value, REWRITE the line to create a stronger "
+    "visual cue rather than decorating it with filler b-roll.\n"
+    "- LOOP CLOSURE: the final spoken line (just before or inside the CTA) "
+    "should stitch back to the opening hook — an echo of its wording or imagery "
+    "— so the video rewatches seamlessly when it loops.\n\n"
     "Respond ONLY with a JSON object. No prose, no markdown fences."
 )
 
@@ -95,14 +105,15 @@ Return STRICT JSON only, exactly this shape:
       "direction": "the delivery direction in one sentence — pace, emphasis, where to pause",
       "script": "the actual spoken words",
       "broll": [
-        {{"cue_phrase": "verbatim phrase from THIS segment's script", "visual": "what to show"}}
+        {{"cue_phrase": "verbatim phrase from THIS segment's script", "visual": "what to show", "purpose": "proof|emphasis|example|transition|pacing"}}
       ]
     }}
   ],
   "cta": {{
     "question": "specific, answerable in under five words",
     "lurker_onramp": "one-word reply option, e.g. 'Just reply SLEEP or STRESS'"
-  }}
+  }},
+  "loop_closure": "one sentence: how the final line echoes the hook so the video loops"
 }}
 
 Segment names for a {fmt}: {segment_hint}
@@ -183,9 +194,13 @@ def validate_and_estimate(script: dict) -> dict:
             anchored = bool(phrase) and phrase.lower() in body.lower()
             if not anchored and phrase:
                 orphaned.append(f"{seg.get('name', '?')}: {phrase}")
+            purpose = str(c.get("purpose", "")).lower().strip()
+            if purpose not in ("proof", "emphasis", "example", "transition", "pacing"):
+                purpose = "unspecified"
             cues.append({
                 "cue_phrase": phrase,
                 "visual": str(c.get("visual", ""))[:300],
+                "purpose": purpose,
                 "anchored": anchored,
             })
 
@@ -202,7 +217,13 @@ def validate_and_estimate(script: dict) -> dict:
     script["segments"] = clean_segments
     script["est_runtime_sec"] = round(total_sec)
     script["orphaned_cues"] = orphaned
+    script["loop_closure"] = str(script.get("loop_closure", ""))[:300]
     script["generated_at"] = common.utc_now_iso()
+    n_pacing = sum(1 for seg in clean_segments for c in seg["broll"]
+                   if c["purpose"] == "pacing")
+    if n_pacing:
+        log.info("%d cue(s) are purpose=pacing — weakest justification, "
+                 "first candidates to cut if the edit runs long", n_pacing)
 
     if orphaned:
         log.warning("%d b-roll cue(s) not found verbatim in their segment: %s",
