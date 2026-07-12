@@ -402,6 +402,24 @@ function renderScatter(){
 }
 
 /* ---------- fix panel ---------- */
+function driftBanner(v){
+  const d=v.drift;
+  if(d.missing) return `<div class="drift"><b>Drift</b> — this video was published through apply.py but is no longer visible (deleted, private, or unlisted?).</div>`;
+  const f=d.fields||{};
+  const bits=Object.keys(f).map(k=>{
+    if(k==="tags"){const a=(f[k].added||[]).length,r=(f[k].removed||[]).length;
+      return `tags (${a?`+${a} `:""}${r?`−${r}`:""})`.trim()}
+    return `${k} ${f[k].note||"changed"}`;
+  });
+  return `<div class="drift"><b>Drift</b> — ${bits.join(" · ")} since published ${(d.applied_at||"").slice(0,10)}.
+    Re-baseline with <code>drift.py --accept ${esc(v.id)}</code> if the change was intentional.</div>`;
+}
+function pendingBanner(v){
+  const f=Object.keys(v.pending.changes||{});
+  if(!f.length) return "";
+  return `<div class="pending"><b>Proposed</b> — ${f.join(", ")} ready to apply.
+    Run the Action with <code>apply_video = ${esc(v.id)}</code> to publish.</div>`;
+}
 function renderFix(){
   const order={high:0,medium:1,low:2,none:3};
   const q=(document.getElementById("fixfilter").value||"").toLowerCase();
@@ -420,6 +438,8 @@ function renderFix(){
         <span class="pill sm ${scoreCls(v.seo)}">${v.seo==null?"—":v.seo}</span>
         <span class="chev">▶</span>
       </div>
+      ${v.drift?driftBanner(v):""}
+      ${v.pending?pendingBanner(v):""}
       <div class="fix-detail">${sugs.length?sugs.map(s=>`
         <div class="sug ${esc(s.severity)}">
           <div class="sug-h"><span class="sug-area">${esc(s.area)}</span> · ${esc(s.severity)}</div>
@@ -649,12 +669,13 @@ async function load(){
       comp:k.scores?.competition_inverted,fit:k.scores?.channel_fit,depth:k.autocomplete_depth,
       suggestions:k.suggestions||[],script:k.script||null,
       titles:(k.titles||[]).slice().sort((a,b)=>b.score-a.score)}));
-    VID=Object.values((snap.own_channel||{}).videos||{}).map(v=>({
-      title:v.title||"(untitled)",views:v.views,
+    VID=Object.entries((snap.own_channel||{}).videos||{}).map(([id,v])=>({
+      id,title:v.title||"(untitled)",views:v.views,
       pct:v.analytics?.avg_view_percentage??null,dur:v.analytics?.avg_view_duration_sec??null,
       subs:v.analytics?(v.analytics.subscribers_gained-v.analytics.subscribers_lost):null,
       seo:v.seo?.composite??null,kw:v.seo?.matched_keyword??null,
-      analysis:v.analysis||null,priority:v.analysis?.priority||"none"}));
+      analysis:v.analysis||null,priority:v.analysis?.priority||"none",
+      drift:v.drift||null,pending:v.pending_changes||null,applied:v.applied||null}));
     document.getElementById("meta").innerHTML=`Snapshot <strong>${esc(snap.date)}</strong> · ${KW.length} keywords · ${VID.length} videos · quota <strong>${snap.quota_units_used??"?"}</strong>/10,000`;
     renderPQ();renderBars();renderScatter();renderFix();renderKw();renderVid();initPackage();initScript();
   }catch(e){

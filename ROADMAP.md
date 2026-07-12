@@ -38,15 +38,59 @@ production workflow tools, not here.
   unanchored cues are flagged in the dashboard rather than shipped silently.
 - [x] ~~**Platform copy generator**~~ — **REMOVED FROM SCOPE.** YouTube only.
 
-## Stage 3 — Close the loop
-*Requires write-scope OAuth (`youtube` scope; re-run oauth_setup.py, update
-YT_REFRESH_TOKEN). ~1 session. Comes after trust is established.*
+## Stage 3 — Close the loop ✅ CODE COMPLETE (awaiting write-scope OAuth)
+*Gated on: re-run oauth_setup.py with the `youtube` scope, update YT_REFRESH_TOKEN.*
 
-- [ ] **8. apply.py** — vidIQ-parity metadata editing. Reads Fix Panel suggestions,
-  shows old → new diff, applies ONLY what Dan approves (workflow_dispatch input,
-  per video). **Never auto-applies.** videos.update = 50 quota units per video.
-- [ ] **9. Drift detection** — daily cron compares each published video's live
-  title/desc/tags against its Publish Package; mismatches surface in the Fix Panel.
+- [x] **8. apply.py** — vidIQ-parity metadata editing, behind FOUR safety gates:
+  (1) nothing writes without `--apply`; (2) `--apply` requires a NAMED video —
+  there is no bulk apply; (3) freshness — refuses to apply a suggestion if the
+  video changed since Claude analyzed it; (4) the full snippet is fetched and
+  carried through, so categoryId/language are never blanked by omission.
+  Description writes are OPT-IN and guarded: analyze.py clips every suggestion
+  example at 200 chars, so description examples are truncated fragments —
+  apply.py detects the clip ceiling and refuses rather than publishing a stub.
+  Tag merges strip Claude's label prefixes, put new tags first, and respect both
+  the 500-char and 15-tag ceilings. videos.update = 50 quota units.
+- [x] **9. Drift detection** — daily cron compares each published video's live
+  metadata against the baseline apply.py recorded. Zero extra API calls
+  (collect.py already fetches live metadata). Tag REORDERING is ignored — only
+  real changes surface. Drift is not an error; `drift.py --accept VID`
+  re-baselines an intentional change. Surfaces as a red banner in the Fix Panel.
+
+## Sidecar — B-roll timestamp matcher ✅ BUILT (standalone, runs locally)
+*Not part of the Actions pipeline BY DESIGN: footage lives on Dan's machine.
+Runs locally / in Cowork. `broll_match.py` in the repo root.*
+
+- [x] Whisper (faster-whisper) word-level transcription of filmed footage.
+- [x] Fuzzy phrase matching — sequence similarity + rarity-weighted token
+  overlap (stopwords and video-common words barely count), spoken-number
+  normalization ("fifteen" == "15"). Delivery never matches the script
+  verbatim; this is built for paraphrase.
+- [x] Cues pulled straight from script.py output (`--snapshot data/latest.json
+  --keyword ...`) or a plain text file (`--cues`, one per line, `| visual`).
+- [x] Confidence bands: >=0.62 MATCHED, 0.55-0.62 LOW (eyeball it), else
+  NOT_FOUND (line was cut or fully ad-libbed — flagged, never guessed).
+- [x] Multiple takes: best match wins, near-tied takes >5s away land in
+  alt_candidates. Output: broll_placement.csv (CapCut-ready columns:
+  cue_phrase, visual, status, start/end sec, timecode, matched_text,
+  confidence, alt_candidates).
+- Validated end-to-end with synthesized audio through Whisper tiny; use
+  `--model small` (default) or `turbo` on real footage.
+- Setup on Dan's machine: `pip install faster-whisper` (one time).
+
+## Decisions log (2026-07-11 session)
+- Script Generator v2 (standalone HTML): RETIRED. script.py absorbed the
+  segment/delivery-direction engine. Remaining gap: script.py only takes
+  tracked keywords — planned fix is a `--topic` flag for non-keyword content
+  (Mortgage Effect, story-bank videos), NOT a separate tool. A thin
+  segment-level editor UI stays on the shelf until real friction proves it out.
+- Platform copy generator: REMOVED (YouTube-only focus).
+- B-roll matcher: standalone (footage is local; Actions can't see it), reads
+  script.py cues as input. Built this session.
+- Current state: Stages 1-2 live and verified on the channel. Stage 3 code
+  complete and exported, awaiting write-scope OAuth re-run + push. Stage 4 not
+  started. Next session: push Stage 3, OAuth, first live apply on one video,
+  then Stage 4 (retention-informed scoring + weekly digest), then `--topic`.
 
 ## Stage 4 — Performance feedback into planning
 *Ongoing. The compounding stage — the system gets smarter every upload.*
