@@ -5,9 +5,16 @@ you paste into GitHub secrets once. After that, GitHub Actions refreshes its
 own access tokens on every run — nothing further to do in a browser again
 (unless you ever revoke access in your Google account).
 
-Scope requested: yt-analytics.readonly (view-only access to YouTube
-Analytics — watch time, retention, subscriber deltas). This does NOT grant
-upload, edit, or delete permissions on your channel.
+Scopes requested:
+  1. yt-analytics.readonly — view-only access to YouTube Analytics (watch time,
+     retention, subscriber deltas). Used by analytics.py.
+  2. youtube — WRITE access, required by apply.py (Stage 3) to update a video's
+     title/description/tags via videos.update.
+
+IMPORTANT: apply.py NEVER writes automatically. It only touches a video when you
+explicitly approve it via a workflow_dispatch input, and it always shows an
+old -> new diff first. The write scope is the capability; the approval gate is
+the control.
 
 Prerequisites (see README.md "OAuth setup" section for the click-by-click):
   1. In Google Cloud Console (SECONDARY account, same project as your
@@ -27,7 +34,10 @@ except ImportError:
     print("Missing dependency. Run: pip install google-auth-oauthlib")
     sys.exit(1)
 
-SCOPES = ["https://www.googleapis.com/auth/yt-analytics.readonly"]
+SCOPES = [
+    "https://www.googleapis.com/auth/yt-analytics.readonly",  # read: analytics.py
+    "https://www.googleapis.com/auth/youtube",                # write: apply.py (Stage 3)
+]
 
 
 def main():
@@ -51,6 +61,8 @@ def main():
     flow = InstalledAppFlow.from_client_config(client_config, SCOPES)
     print("\nA browser window will open. Sign in with your SECONDARY Google "
           "account (the one your channel/API key uses) and approve access.\n")
+    print("You will be asked to approve TWO permissions this time — Analytics "
+          "(read) and channel management (write). Both are required.\n")
     creds = flow.run_local_server(port=0)
 
     print("\n--- SUCCESS ---")
