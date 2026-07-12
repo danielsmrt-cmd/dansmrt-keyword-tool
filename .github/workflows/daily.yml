@@ -16,6 +16,18 @@ on:
         description: "Re-run Claude fix analysis on ALL videos (not just changed ones)"
         type: boolean
         default: false
+      run_script:
+        description: "Generate a segment-based script (costs API tokens)"
+        type: boolean
+        default: false
+      script_keyword:
+        description: "Optional: keyword to script (default = top Opportunity Score)"
+        required: false
+      script_format:
+        description: "Script format"
+        type: choice
+        options: [short, long]
+        default: short
 
 permissions:
   contents: write
@@ -83,6 +95,17 @@ jobs:
             python scripts/titles.py --keyword "${{ inputs.titles_keyword }}"
           else
             python scripts/titles.py --top 5
+          fi
+
+      - name: Script (on demand only)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_script }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "${{ inputs.script_keyword }}" ]; then
+            python scripts/script.py --keyword "${{ inputs.script_keyword }}" --format "${{ inputs.script_format }}"
+          else
+            python scripts/script.py --format "${{ inputs.script_format }}"
           fi
 
       - name: Commit snapshot
