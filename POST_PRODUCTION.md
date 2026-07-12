@@ -39,7 +39,9 @@ python broll_match.py workingcut.mp4 --snapshot data\latest.json --keyword "your
 
 (or `--cues cues.txt` for non-keyword videos — format: `phrase | visual | purpose`)
 
-- [ ] Open `broll_placement.csv`
+- [ ] Open **`broll_viewer.html`** in your browser and drag `broll_placement.csv` onto it
+      — visual timeline, pacing gaps painted on the A-roll bar, click any timecode to copy.
+      (The raw CSV works too if you'd rather read it directly.)
 - [ ] **MATCHED** rows → place b-roll at those timecodes
 - [ ] **LOW** rows → scrub to the timecode and verify by ear before trusting
 - [ ] **NOT_FOUND** rows → the line was cut or ad-libbed; place manually or drop

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B-Roll Placement — DanSmrtCoaching</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B2A4A;
+    --navy-deep:#111C33;
+    --navy-lift:#24365C;
+    --yellow:#FFFF00;
+    --ink:#EAF0FF;
+    --muted:#8296BD;
+    --line:rgba(130,150,189,.24);
+    --ok:#38D97B;
+    --low:#FFB020;
+    --miss:#FF5C5C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--navy-deep);
+    color:var(--ink);
+    font-family:'Barlow Condensed',system-ui,sans-serif;
+    font-weight:500;
+    font-size:17px;
+    line-height:1.4;
+    padding:28px 22px 60px;
+    min-height:100vh;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+
+  h1{
+    font-family:'Oswald',sans-serif;font-weight:700;
+    text-transform:uppercase;letter-spacing:.08em;
+    font-size:26px;line-height:1;
+  }
+  h1 span{color:var(--yellow)}
+  .sub{color:var(--muted);font-size:16px;margin-top:5px}
+  header{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:22px}
+  header .spacer{flex:1}
+
+  /* ---------- drop zone ---------- */
+  #drop{
+    border:2px dashed var(--line);border-radius:14px;
+    padding:52px 24px;text-align:center;cursor:pointer;
+    transition:border-color .15s, background .15s;
+    background:rgba(255,255,255,.02);
+  }
+  #drop:hover,#drop.over{border-color:var(--yellow);background:rgba(255,255,0,.05)}
+  #drop .big{
+    font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:.06em;font-size:19px;
+  }
+  #drop .small{color:var(--muted);margin-top:7px;font-size:16px}
+  #drop code{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;
+    background:rgba(0,0,0,.35);padding:2px 7px;border-radius:5px;color:var(--yellow);
+  }
+
+  /* ---------- summary strip ---------- */
+  .strip{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 18px}
+  .stat{
+    background:var(--navy);border:1px solid var(--line);border-radius:10px;
+    padding:9px 15px;display:flex;align-items:baseline;gap:9px;
+  }
+  .stat b{
+    font-family:'Oswald',sans-serif;font-weight:700;font-size:22px;line-height:1;
+  }
+  .stat span{
+    color:var(--muted);text-transform:uppercase;letter-spacing:.07em;
+    font-size:12px;font-weight:600;
+  }
+  .stat.ok b{color:var(--ok)} .stat.low b{color:var(--low)} .stat.miss b{color:var(--miss)}
+  .stat.gap b{color:var(--yellow)}
+
+  /* ---------- SIGNATURE: the timeline ---------- */
+  .tl-head{
+    display:flex;align-items:baseline;gap:12px;margin-bottom:9px;flex-wrap:wrap;
+  }
+  .tl-head h2{
+    font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:.07em;font-size:13px;color:var(--yellow);
+  }
+  .tl-head .hint{color:var(--muted);font-size:14px}
+  .timeline{
+    position:relative;height:118px;background:var(--navy);
+    border:1px solid var(--line);border-radius:12px;
+    margin-bottom:26px;overflow:hidden;
+  }
+  /* the A-roll bar: continuous, because the voice never cuts */
+  .aroll{
+    position:absolute;left:0;right:0;top:78px;height:12px;
+    background:linear-gradient(180deg,var(--navy-lift),#1c2c4e);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  .aroll-lbl{
+    position:absolute;left:9px;top:95px;
+    font-family:'IBM Plex Mono',monospace;font-size:10px;
+    color:var(--muted);letter-spacing:.08em;
+  }
+  /* pacing gaps painted onto the A-roll */
+  .gap{
+    position:absolute;top:78px;height:12px;
+  }
+  .gap.cliff{background:repeating-linear-gradient(45deg,rgba(255,92,92,.55),rgba(255,92,92,.55) 4px,transparent 4px,transparent 8px)}
+  .gap.over{background:repeating-linear-gradient(45deg,rgba(255,176,32,.6),rgba(255,176,32,.6) 3px,transparent 3px,transparent 6px)}
+  /* b-roll markers standing on the A-roll */
+  .mark{
+    position:absolute;bottom:40px;width:3px;
+    background:var(--yellow);cursor:pointer;
+    transition:transform .12s;transform-origin:bottom;
+  }
+  .mark:hover{transform:scaleX(2.4)}
+  .mark.low{background:var(--low)}
+  .mark .flag{
+    position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
+    background:var(--yellow);color:var(--navy-deep);
+    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:10px;
+    padding:2px 5px;border-radius:4px;white-space:nowrap;
+  }
+  .mark.low .flag{background:var(--low)}
+  .mark.stagger .flag{transform:translateX(-50%) translateY(-15px)}
+  .mark.stagger::after{
+    content:"";position:absolute;bottom:100%;left:50%;
+    width:1px;height:15px;background:currentColor;
+  }
+  .mark.low{color:var(--low)} .mark:not(.low){color:var(--yellow)}
+  .ruler{position:absolute;left:0;right:0;bottom:6px;height:14px}
+  .tick{
+    position:absolute;font-family:'IBM Plex Mono',monospace;
+    font-size:10px;color:var(--muted);transform:translateX(-50%);
+  }
+
+  /* ---------- cue cards ---------- */
+  .cue{
+    display:grid;grid-template-columns:74px 1fr auto;gap:14px;align-items:start;
+    background:var(--navy);border:1px solid var(--line);border-left:3px solid var(--muted);
+    border-radius:10px;padding:12px 14px;margin-bottom:9px;
+  }
+  .cue.MATCHED{border-left-color:var(--ok)}
+  .cue.LOW{border-left-color:var(--low)}
+  .cue.NOT_FOUND{border-left-color:var(--miss);opacity:.72}
+  .tcode{
+    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px;
+    color:var(--yellow);cursor:pointer;padding:3px 0;
+  }
+  .tcode:hover{text-decoration:underline}
+  .cue.NOT_FOUND .tcode{color:var(--miss);cursor:default;text-decoration:none;font-size:13px}
+  .phrase{
+    font-family:'Oswald',sans-serif;font-weight:500;font-size:16px;
+    line-height:1.25;margin-bottom:3px;
+  }
+  .phrase::before{content:'“'} .phrase::after{content:'”'}
+  .visual{color:var(--muted);font-size:15px}
+  .heard{
+    color:var(--muted);font-size:14px;margin-top:4px;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;
+  }
+  .heard b{color:var(--ink);font-weight:400}
+  .meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+  .chip{
+    font-family:'Oswald',sans-serif;font-weight:500;text-transform:uppercase;
+    letter-spacing:.07em;font-size:10px;padding:3px 8px;border-radius:5px;
+    border:1px solid var(--line);color:var(--muted);white-space:nowrap;
+  }
+  .chip.proof,.chip.emphasis,.chip.example{color:var(--yellow);border-color:rgba(255,255,0,.35)}
+  .chip.pacing{color:var(--muted)}
+  .conf{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+
+  /* ---------- warnings ---------- */
+  .warn{
+    background:rgba(255,92,92,.09);border:1px solid rgba(255,92,92,.35);
+    border-radius:10px;padding:11px 14px;margin-bottom:9px;font-size:16px;
+  }
+  .warn.over{background:rgba(255,176,32,.09);border-color:rgba(255,176,32,.35)}
+  .warn b{
+    font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:.06em;font-size:11px;color:var(--miss);margin-right:7px;
+  }
+  .warn.over b{color:var(--low)}
+  .warn code{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--yellow)}
+
+  h3.sec{
+    font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:.07em;font-size:13px;color:var(--yellow);
+    margin:24px 0 10px;
+  }
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,80px);
+    background:var(--yellow);color:var(--navy-deep);
+    font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
+    letter-spacing:.06em;font-size:13px;padding:9px 18px;border-radius:8px;
+    transition:transform .2s;pointer-events:none;
+  }
+  .toast.up{transform:translate(-50%,0)}
+  #app{display:none}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media(max-width:640px){
+    .cue{grid-template-columns:64px 1fr}
+    .meta{grid-column:1/-1;flex-direction:row;align-items:center}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <h1>B-Roll <span>Placement</span></h1>
+      <div class="sub">Where each cue actually landed in the take.</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="sub" id="fname"></div>
+  </header>
+
+  <div id="drop">
+    <div class="big">Drop broll_placement.csv here</div>
+    <div class="small">or click to browse — it's written next to your footage by <code>broll_match.py</code></div>
+    <input type="file" id="file" accept=".csv" hidden>
+  </div>
+
+  <div id="app">
+    <div class="strip" id="strip"></div>
+
+    <div class="tl-head">
+      <h2>Timeline</h2>
+      <span class="hint">Hatched stretches on the A-roll bar have no planned visual change. Click any marker to copy its timecode.</span>
+    </div>
+    <div class="timeline" id="tl"></div>
+
+    <div id="warnings"></div>
+    <h3 class="sec">Cues</h3>
+    <div id="cues"></div>
+  </div>
+
+</div>
+<div class="toast" id="toast">Copied</div>
+
+<script>
+const GAP_CLIFF = 2.5, GAP_OVERLOAD = 1.2;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const tc = s => { const m = Math.floor(s/60), x = (s%60).toFixed(1).padStart(4,"0"); return `${m}:${x}`; };
+
+/* --- CSV parse (handles quoted fields with commas) --- */
+function parseCSV(text){
+  const rows = []; let row = [], cur = "", q = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (q){
+      if (c === '"' && text[i+1] === '"'){ cur += '"'; i++; }
+      else if (c === '"'){ q = false; }
+      else cur += c;
+    } else if (c === '"') q = true;
+    else if (c === ","){ row.push(cur); cur = ""; }
+    else if (c === "\n"){ row.push(cur); rows.push(row); row = []; cur = ""; }
+    else if (c !== "\r") cur += c;
+  }
+  if (cur || row.length){ row.push(cur); rows.push(row); }
+  const head = rows.shift().map(h => h.trim());
+  return rows.filter(r => r.some(v => v !== "")).map(r => {
+    const o = {}; head.forEach((h, i) => o[h] = (r[i] ?? "").trim()); return o;
+  });
+}
+
+function render(rows, name){
+  $("drop").style.display = "none";
+  $("app").style.display = "block";
+  $("fname").textContent = name;
+
+  const placed = rows.filter(r => r.start_sec !== "" && r.status !== "NOT_FOUND")
+                     .map(r => ({...r, start: +r.start_sec, end: +r.end_sec}))
+                     .sort((a,b) => a.start - b.start);
+  const n = s => rows.filter(r => r.status === s).length;
+  const dur = placed.length ? Math.max(...placed.map(p => p.end)) * 1.12 : 60;
+
+  /* --- gaps between visual anchors --- */
+  const pts = [0, ...placed.map(p => p.start), dur];
+  const gaps = [];
+  for (let i = 0; i < pts.length - 1; i++){
+    const g = pts[i+1] - pts[i];
+    if (g > GAP_CLIFF) gaps.push({a: pts[i], b: pts[i+1], g, kind: "cliff"});
+    else if (g > 0 && g < GAP_OVERLOAD) gaps.push({a: pts[i], b: pts[i+1], g, kind: "over"});
+  }
+
+  /* --- summary --- */
+  $("strip").innerHTML = `
+    <div class="stat ok"><b>${n("MATCHED")}</b><span>matched</span></div>
+    <div class="stat low"><b>${n("LOW")}</b><span>check by ear</span></div>
+    <div class="stat miss"><b>${n("NOT_FOUND")}</b><span>not found</span></div>
+    <div class="stat gap"><b>${gaps.length}</b><span>pacing flags</span></div>`;
+
+  /* --- timeline --- */
+  const pct = s => (s / dur * 100).toFixed(2) + "%";
+  let html = `<div class="aroll"></div><div class="aroll-lbl">A-ROLL — AUDIO UNBROKEN</div>`;
+  gaps.forEach(g => {
+    html += `<div class="gap ${g.kind}" style="left:${pct(g.a)};width:${pct(g.b - g.a)}"
+              title="${g.g.toFixed(1)}s — ${g.kind === "cliff" ? "no visual change" : "changes too fast"}"></div>`;
+  });
+  // stagger flags when markers crowd together
+  let lastPx = -99;
+  placed.forEach(p => {
+    const x = p.start / dur * 100;
+    const stagger = (x - lastPx) < 9;
+    if (!stagger) lastPx = x;
+    html += `<div class="mark ${p.status === "LOW" ? "low" : ""} ${stagger ? "stagger" : ""}"
+                  style="left:${pct(p.start)};height:${stagger ? 52 : 38}px"
+                  data-t="${tc(p.start)}" title="${esc(p.cue_phrase)}">
+               <span class="flag">${tc(p.start)}</span></div>`;
+  });
+  html += `<div class="ruler">`;
+  const step = dur > 90 ? 30 : dur > 40 ? 10 : 5;
+  for (let s = 0; s <= dur; s += step)
+    html += `<span class="tick" style="left:${pct(s)}">${tc(s)}</span>`;
+  html += `</div>`;
+  $("tl").innerHTML = html;
+
+  document.querySelectorAll(".mark").forEach(m =>
+    m.onclick = () => copy(m.dataset.t));
+
+  /* --- pacing warnings --- */
+  $("warnings").innerHTML = gaps.length ? `<h3 class="sec">Pacing</h3>` + gaps.map(g =>
+    g.kind === "cliff"
+      ? `<div class="warn"><b>Cliff risk</b><code>${tc(g.a)} → ${tc(g.b)}</code> —
+         ${g.g.toFixed(1)}s with no planned visual change. Fill it with a cut, a punch-in zoom,
+         or a text overlay. It doesn't have to be b-roll.</div>`
+      : `<div class="warn over"><b>Overload</b><code>${tc(g.a)} → ${tc(g.b)}</code> —
+         ${g.g.toFixed(1)}s between changes reads as noise. Drop one, starting with a
+         <em>pacing</em> cue.</div>`
+  ).join("") : `<h3 class="sec">Pacing</h3>
+      <div class="warn over" style="background:rgba(56,217,123,.09);border-color:rgba(56,217,123,.35)">
+      <b style="color:var(--ok)">Plateau</b>Every gap sits in the 1.2–2.5s window. This edit paces well.</div>`;
+
+  /* --- cue cards --- */
+  $("cues").innerHTML = rows.map(r => {
+    const found = r.status !== "NOT_FOUND";
+    return `<div class="cue ${r.status}">
+      <div class="tcode" ${found ? `data-t="${r.timecode}"` : ""}>${found ? esc(r.timecode) : "—"}</div>
+      <div>
+        <div class="phrase">${esc(r.cue_phrase)}</div>
+        <div class="visual">${esc(r.visual)}</div>
+        ${found && r.matched_text && r.matched_text.toLowerCase() !== r.cue_phrase.toLowerCase()
+          ? `<div class="heard">you said: <b>${esc(r.matched_text)}</b></div>` : ""}
+        ${!found ? `<div class="heard">Cut or ad-libbed. Place it by hand, or drop the shot.</div>` : ""}
+      </div>
+      <div class="meta">
+        ${r.purpose ? `<span class="chip ${esc(r.purpose)}">${esc(r.purpose)}</span>` : ""}
+        ${r.confidence ? `<span class="conf">${(+r.confidence * 100).toFixed(0)}%</span>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+
+  document.querySelectorAll(".tcode[data-t]").forEach(t =>
+    t.onclick = () => copy(t.dataset.t));
+}
+
+function copy(t){
+  navigator.clipboard.writeText(t);
+  const el = $("toast");
+  el.textContent = `Copied ${t}`;
+  el.classList.add("up");
+  clearTimeout(copy._t);
+  copy._t = setTimeout(() => el.classList.remove("up"), 1100);
+}
+
+function load(file){
+  const r = new FileReader();
+  r.onload = e => {
+    try { render(parseCSV(e.target.result), file.name); }
+    catch (err) {
+      $("drop").innerHTML = `<div class="big" style="color:var(--miss)">That file didn't parse</div>
+        <div class="small">Expected the CSV written by <code>broll_match.py</code>. Click to try another.</div>`;
+    }
+  };
+  r.readAsText(file);
+}
+
+const drop = $("drop"), input = $("file");
+drop.onclick = () => input.click();
+input.onchange = e => e.target.files[0] && load(e.target.files[0]);
+drop.ondragover = e => { e.preventDefault(); drop.classList.add("over"); };
+drop.ondragleave = () => drop.classList.remove("over");
+drop.ondrop = e => {
+  e.preventDefault(); drop.classList.remove("over");
+  const f = e.dataTransfer.files[0];
+  if (f) load(f);
+};
+</script>
+</body>
+</html>

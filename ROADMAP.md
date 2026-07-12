@@ -77,6 +77,13 @@ Runs locally / in Cowork. `broll_match.py` in the repo root.*
 - Validated end-to-end with synthesized audio through Whisper tiny; use
   `--model small` (default) or `turbo` on real footage.
 - Setup on Dan's machine: `pip install faster-whisper` (one time).
+- [x] **broll_viewer.html** — drag-and-drop viewer for broll_placement.csv.
+  Timeline with the A-roll as one unbroken bar (audio never cuts), b-roll cues
+  as markers standing on it, and pacing gaps hatched directly onto the bar so
+  dead visual air is visible rather than tabular. Click any timecode to copy.
+  Pure client-side; no server, no build step. Whisper itself CANNOT run in a
+  browser (500MB model + local footage), so the Python does the work and this
+  visualizes the result.
 
 ## Decisions log (2026-07-11 session)
 - Script Generator v2 (standalone HTML): RETIRED. script.py absorbed the

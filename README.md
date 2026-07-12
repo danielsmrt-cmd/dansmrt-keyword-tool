@@ -151,3 +151,28 @@ calibration.md               how to tune the score against vidIQ
 ```
 
 All data files are human-readable JSON with a `schema_version` field.
+
+## Getting files from Claude into this repo
+
+Chrome numbers duplicate downloads (`insights.html`, `insights (1).html`, ...),
+and the PLAIN name is the OLDEST file — which is backwards from what you want.
+This has silently pushed stale code before. `sync.ps1` fixes it permanently.
+
+**One-time setup**
+```powershell
+mkdir $env:USERPROFILE\claude-inbox
+```
+Chrome → Settings → Downloads → **"Ask where to save each file"** = ON.
+Save everything Claude gives you into `claude-inbox`.
+
+**Every time after that**
+```powershell
+cd C:\Users\danie\Desktop\dansmrt-tool
+.\sync.ps1 -Push
+```
+
+It picks the NEWEST version of each file (ignoring Chrome's numbering), routes
+each one to the right folder (`apply.py` → `scripts\`, `daily.yml` →
+`.github\workflows\`), shows the plan before touching anything, and commits.
+
+Flags: `-DryRun` (show only), `-Push` (commit + push after copying).
