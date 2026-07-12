@@ -33,11 +33,11 @@
   .tabhint{color:var(--muted);font-size:12px;margin:2px 0 10px;flex:0 0 auto}
 
   /* ---- card grid: uniform 3x2 tiles that fill one screen, no page scroll ---- */
-  body{overflow:auto;display:flex;flex-direction:column;min-height:100vh}
+  body{overflow:hidden;display:flex;flex-direction:column;height:100vh}
   .grid{
-    display:grid;gap:14px;flex:1;
+    display:grid;gap:14px;flex:1;min-height:0;
     grid-template-columns:repeat(3,minmax(0,1fr));
-    grid-auto-rows:minmax(330px,calc((100vh - 130px)/2));
+    grid-template-rows:repeat(2,minmax(0,1fr));
   }
   .card{
     background:linear-gradient(160deg, var(--navy-card), var(--navy-deep));
@@ -153,50 +153,6 @@
   .sug-ex .copymini:hover{border-color:var(--yellow);color:var(--yellow)}
   .stale{font-size:12px;color:var(--amber);margin-top:2px}
 
-  /* ---- publish package ---- */
-  .pp-pick{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
-  select{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:8px;
-    color:var(--ink);padding:8px 10px;font:inherit;font-size:15px;max-width:100%}
-  select:focus{outline:2px solid var(--yellow)}
-  .pp-field{margin-bottom:12px}
-  .pp-lbl{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-  .pp-lbl h4{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
-    letter-spacing:.06em;font-size:12px;color:var(--yellow)}
-  .pp-lbl .cnt{color:var(--muted);font-size:12px}
-  .pp-lbl .copymini{margin-left:auto}
-  .pp-box{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;
-    padding:9px 11px;font-size:15px;white-space:pre-wrap;line-height:1.45;
-    max-height:220px;overflow:auto}
-  .pp-box.title{font-weight:700;white-space:normal}
-  .pp-check{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-  .chk{font-size:13px;padding:3px 9px;border-radius:999px;border:1px solid var(--line)}
-  .chk.ok{color:var(--green);border-color:rgba(56,217,123,.4)}
-  .chk.bad{color:var(--red);border-color:rgba(255,92,92,.45)}
-  .pp-all{width:100%;margin-top:2px}
-
-  /* ---- script ---- */
-  .sc-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
-  .sc-premise{color:var(--muted);font-size:14px;margin-bottom:12px;font-style:italic}
-  .sc-seg{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;
-    background:rgba(255,255,255,.02);overflow:hidden}
-  .sc-top{display:flex;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line)}
-  .sc-name{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;
-    letter-spacing:.05em;font-size:13px;color:var(--yellow)}
-  .pace{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;font-size:10px;
-    letter-spacing:.05em;padding:2px 8px;border-radius:5px}
-  .pace.slow{background:#3A5BD9;color:#fff}
-  .pace.measured{background:#33456b;color:var(--ink)}
-  .pace.fast{background:var(--amber);color:#08101f}
-  .sc-est{margin-left:auto;color:var(--muted);font-size:12px}
-  .sc-dir{padding:8px 12px;font-size:14px;color:var(--muted);border-bottom:1px solid var(--line);
-    background:rgba(255,255,0,.04)}
-  .sc-dir b{color:var(--yellow);font-weight:500}
-  .sc-body{padding:10px 12px;font-size:16px;line-height:1.5;white-space:pre-wrap}
-  .sc-cue{padding:6px 12px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);
-    display:flex;gap:8px;align-items:baseline}
-  .sc-cue .anchor{color:var(--yellow);font-weight:600}
-  .sc-cue.orphan .anchor{color:var(--red);text-decoration:line-through}
-
   .empty{padding:30px;text-align:center;color:var(--muted);font-size:16px}
   .controls{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
   input[type=search]{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:8px;
@@ -280,34 +236,6 @@
     </div>
   </section>
 
-  <!-- Publish Package -->
-  <section class="card" data-card="publish">
-    <div class="card-head">
-      <div class="card-title">▶ Publish Package <span class="n">youtube</span></div>
-      <button class="expand" data-x>⤢ Expand</button>
-    </div>
-    <div class="card-body">
-      <div class="pp-pick">
-        <select id="pp-kw"></select>
-        <select id="pp-title"></select>
-      </div>
-      <div id="pp-out"><div class="empty">Loading…</div></div>
-    </div>
-  </section>
-
-  <!-- Script -->
-  <section class="card" data-card="script">
-    <div class="card-head">
-      <div class="card-title">✎ Script <span class="n" id="sc-n"></span></div>
-      <button class="expand" data-x>⤢ Expand</button>
-    </div>
-    <div class="card-body">
-      <div class="sc-head"><select id="sc-kw"></select>
-        <button class="copybtn" id="sc-copy" style="margin-top:0">Copy script</button></div>
-      <div id="sc-out"><div class="empty">Loading…</div></div>
-    </div>
-  </section>
-
   <!-- Own video table -->
   <section class="card" data-card="videos">
     <div class="card-head">
@@ -366,7 +294,6 @@ function renderPQ(){
       <div class="pq-rank">${i+1}</div>
       <div>
         <div class="pq-kw">${esc(k.keyword)}</div>
-        <div class="pq-sub">${esc(whyLine(k))}</div>
         <div class="pq-sub">${best?`Best title: <span class="best">${esc(best.title)}</span> <span class="pill sm ${scoreCls(best.score)}">${best.score}</span>`:'No generated titles yet — run titles'}</div>
         <button class="copybtn" data-copy="${i}">Copy for pipeline</button>
       </div>
@@ -402,24 +329,6 @@ function renderScatter(){
 }
 
 /* ---------- fix panel ---------- */
-function driftBanner(v){
-  const d=v.drift;
-  if(d.missing) return `<div class="drift"><b>Drift</b> — this video was published through apply.py but is no longer visible (deleted, private, or unlisted?).</div>`;
-  const f=d.fields||{};
-  const bits=Object.keys(f).map(k=>{
-    if(k==="tags"){const a=(f[k].added||[]).length,r=(f[k].removed||[]).length;
-      return `tags (${a?`+${a} `:""}${r?`−${r}`:""})`.trim()}
-    return `${k} ${f[k].note||"changed"}`;
-  });
-  return `<div class="drift"><b>Drift</b> — ${bits.join(" · ")} since published ${(d.applied_at||"").slice(0,10)}.
-    Re-baseline with <code>drift.py --accept ${esc(v.id)}</code> if the change was intentional.</div>`;
-}
-function pendingBanner(v){
-  const f=Object.keys(v.pending.changes||{});
-  if(!f.length) return "";
-  return `<div class="pending"><b>Proposed</b> — ${f.join(", ")} ready to apply.
-    Run the Action with <code>apply_video = ${esc(v.id)}</code> to publish.</div>`;
-}
 function renderFix(){
   const order={high:0,medium:1,low:2,none:3};
   const q=(document.getElementById("fixfilter").value||"").toLowerCase();
@@ -438,8 +347,6 @@ function renderFix(){
         <span class="pill sm ${scoreCls(v.seo)}">${v.seo==null?"—":v.seo}</span>
         <span class="chev">▶</span>
       </div>
-      ${v.drift?driftBanner(v):""}
-      ${v.pending?pendingBanner(v):""}
       <div class="fix-detail">${sugs.length?sugs.map(s=>`
         <div class="sug ${esc(s.severity)}">
           <div class="sug-h"><span class="sug-area">${esc(s.area)}</span> · ${esc(s.severity)}</div>
@@ -480,185 +387,6 @@ document.querySelectorAll("#vidtable th[data-v]").forEach(th=>th.onclick=()=>{co
 document.getElementById("kwfilter").oninput=renderKw;
 document.getElementById("fixfilter").oninput=renderFix;
 
-/* ---------- why this keyword ---------- */
-function whyLine(k){
-  const parts=[];
-  if(k.comp!=null) parts.push(k.comp>=65?"wide-open SERP":k.comp>=40?"beatable competition":"crowded SERP");
-  if(k.demand!=null) parts.push(k.demand>=60?"strong demand":k.demand>=35?"steady demand":"thin demand");
-  if(k.fit!=null) parts.push(k.fit>=60?"squarely your lane":k.fit>=30?"adjacent to your lane":"off your lane");
-  if(k.depth) parts.push(`${k.depth} autocomplete variants`);
-  return "Why: "+parts.join(" · ");
-}
-
-/* ---------- publish package (client-side, zero API cost) ---------- */
-const SITE="https://DanSmrtCoaching.com", CHAN="https://youtube.com/@DanSmrtCoaching";
-const BRAND_TAGS=["dan smrt","dansmrt coaching","fitness over 40","nutrition over 40","weight loss over 40"];
-const words=s=>s.trim().split(/\s+/).filter(Boolean);
-
-function buildTags(k){
-  // Candidates in priority order: exact keyword, long-tail variants, brand tags.
-  const cand=[];const seen=new Set();
-  const push=t=>{t=String(t).toLowerCase().trim();if(t&&!seen.has(t)&&t.length<=60){seen.add(t);cand.push(t)}};
-  push(k.keyword);
-  (k.suggestions||[]).slice(0,14).forEach(push);
-  BRAND_TAGS.forEach(push);
-  // Greedy fill against YouTube's real constraint: 500 chars total, 8–15 tags.
-  const out=[];let len=0;
-  for(const t of cand){
-    if(out.length>=15) break;
-    const add=t.length+(out.length?2:0);   // ", " separator
-    if(len+add>500) continue;              // skip long ones, keep filling with shorter
-    out.push(t); len+=add;
-  }
-  return out;
-}
-function buildHashtags(k){
-  const t=k.keyword.replace(/[^a-z0-9 ]/gi,"").split(/\s+/).filter(Boolean);
-  const camel=t.map(w=>w[0].toUpperCase()+w.slice(1)).join("");
-  return ["#"+camel,"#Over40Fitness","#KISSofDESS"].join(" ");
-}
-function buildDescription(k,title){
-  const kw=k.keyword;
-  const rel=(k.suggestions||[]).slice(0,3);
-  return `If you're over 40 and ${kw} feels harder than it used to, you're not imagining it — something actually changed. This video breaks down what's going on and the one adjustment that moves the needle first.
-
-I'm Dan, a certified fitness and nutrition coach for adults 40 and over. I teach the K.I.S.S. of D.E.S.S. framework — Keep It Stupid Simple across Diet, Exercise, Sleep, and Stress. Most advice aimed at people our age either ignores what changed in your body or buries you in complexity you'll quit inside two weeks. This is the opposite of that.
-
-WHAT'S IN THIS VIDEO
-- Why ${kw} behaves differently after 40
-- The single change to make first, and why order matters
-- What to stop doing immediately
-- How Sleep and Stress quietly decide whether Diet and Exercise work at all
-
-CHAPTERS
-0:00 The problem
-0:00 What actually changed
-0:00 The fix
-0:00 Where to start this week
-
-RELATED: ${rel.length?rel.join(" · "):kw}
-
-COMMENT: What have you already tried for ${kw} that didn't work? One line is plenty. Lurking? Just drop DIET or STRESS — whichever one you suspect is the real culprit.
-
-Coaching and programs: ${SITE}
-Subscribe: ${CHAN}
-
-${buildHashtags(k)}`;
-}
-function chk(ok,label){return `<span class="chk ${ok?"ok":"bad"}">${ok?"✓":"✗"} ${label}</span>`}
-
-function renderPackage(){
-  const kwSel=document.getElementById("pp-kw"), tSel=document.getElementById("pp-title");
-  const k=KW.find(x=>x.keyword===kwSel.value); if(!k)return;
-  const titles=k.titles||[];
-  const title=titles.length?(titles[+tSel.value]||titles[0]).title:`${k.keyword} — what changed after 40`;
-  const desc=buildDescription(k,title);
-  const tags=buildTags(k);
-  const tagStr=tags.join(", ");
-  const first25=words(desc).slice(0,25).join(" ").toLowerCase();
-
-  const inTitle=title.toLowerCase().includes(k.keyword.toLowerCase());
-  const okLen=title.length<=60;
-  const inFirst=first25.includes(k.keyword.toLowerCase());
-  const okWords=words(desc).length>=150;
-  const okTags=tags.length>=8&&tags.length<=15&&tagStr.length<=500;
-
-  document.getElementById("pp-out").innerHTML=`
-    <div class="pp-check">
-      ${chk(inTitle,"keyword in title")}${chk(okLen,`title ${title.length}/60`)}
-      ${chk(inFirst,"keyword in first 25 words")}${chk(okWords,`${words(desc).length} words`)}
-      ${chk(okTags,`${tags.length} tags · ${tagStr.length}/500 chars`)}
-    </div>
-    <div class="pp-field"><div class="pp-lbl"><h4>Title</h4>
-      ${titles.length?`<span class="pill sm ${scoreCls(titles[+tSel.value||0].score)}">${titles[+tSel.value||0].score}</span>`:'<span class="cnt">no generated titles — run titles</span>'}
-      <button class="copymini" data-cp="t">Copy</button></div>
-      <div class="pp-box title" id="pp-t">${esc(title)}</div></div>
-    <div class="pp-field"><div class="pp-lbl"><h4>Description</h4>
-      <span class="cnt">fill the 0:00 chapters after the edit</span>
-      <button class="copymini" data-cp="d">Copy</button></div>
-      <div class="pp-box" id="pp-d">${esc(desc)}</div></div>
-    <div class="pp-field"><div class="pp-lbl"><h4>Tags</h4>
-      <button class="copymini" data-cp="g">Copy</button></div>
-      <div class="pp-box" id="pp-g">${esc(tagStr)}</div></div>
-    <button class="copybtn pp-all" data-cp="all">Copy full package</button>`;
-
-  const payload={t:title,d:desc,g:tagStr,
-    all:`TITLE\n${title}\n\nDESCRIPTION\n${desc}\n\nTAGS\n${tagStr}`};
-  document.querySelectorAll("#pp-out [data-cp]").forEach(b=>b.onclick=()=>copy(payload[b.dataset.cp],b));
-}
-function initPackage(){
-  const kwSel=document.getElementById("pp-kw");
-  const ranked=[...KW].sort((a,b)=>(b.score??0)-(a.score??0));
-  kwSel.innerHTML=ranked.map(k=>`<option value="${esc(k.keyword)}">${esc(k.keyword)} — ${Math.round(k.score??0)}</option>`).join("");
-  const fillTitles=()=>{
-    const k=KW.find(x=>x.keyword===kwSel.value);
-    const t=(k&&k.titles)||[];
-    document.getElementById("pp-title").innerHTML=t.length
-      ? t.map((x,i)=>`<option value="${i}">${esc(x.title)} (${x.score})</option>`).join("")
-      : `<option value="0">No generated titles yet</option>`;
-  };
-  kwSel.onchange=()=>{fillTitles();renderPackage()};
-  document.getElementById("pp-title").onchange=renderPackage;
-  if(!ranked.length){document.getElementById("pp-out").innerHTML=`<div class="empty">No keywords yet.</div>`;return}
-  fillTitles();renderPackage();
-}
-
-/* ---------- script ---------- */
-function renderScript(){
-  const sel=document.getElementById("sc-kw");
-  const k=KW.find(x=>x.keyword===sel.value);
-  const s=k&&k.script;
-  const out=document.getElementById("sc-out");
-  if(!s){out.innerHTML=`<div class="empty">No script for this keyword yet.<br><span class="sub">Run the Action with <b>run_script</b> checked.</span></div>`;
-    document.getElementById("sc-copy").style.display="none";return}
-  document.getElementById("sc-copy").style.display="";
-  const m=Math.floor(s.est_runtime_sec/60),ss=String(s.est_runtime_sec%60).padStart(2,"0");
-  const orph=(s.orphaned_cues||[]).length;
-  out.innerHTML=`
-    <div class="sc-premise">${esc(s.premise||"")}</div>
-    <div class="pp-check">
-      <span class="chk ok">≈ ${m}:${ss} est (advisory)</span>
-      <span class="chk ok">${esc((s.dess_pillars||[]).join(" · ")||"—")}</span>
-      <span class="chk ${orph?"bad":"ok"}">${orph?`${orph} unanchored cue${orph>1?"s":""}`:"all b-roll cues anchored"}</span>
-    </div>
-    ${(s.segments||[]).map(g=>`
-      <div class="sc-seg">
-        <div class="sc-top"><span class="sc-name">${esc(g.name)}</span>
-          <span class="pace ${esc(g.pace)}">${esc(g.pace)}</span>
-          <span class="sc-est">${g.words}w · ~${g.est_sec}s</span></div>
-        <div class="sc-dir"><b>Delivery:</b> ${esc(g.direction)}</div>
-        <div class="sc-body">${esc(g.script)}</div>
-        ${(g.broll||[]).map(c=>`<div class="sc-cue ${c.anchored?"":"orphan"}">
-          <span>B-roll on</span><span class="anchor">"${esc(c.cue_phrase)}"</span>
-          <span>→ ${esc(c.visual)}</span></div>`).join("")}
-      </div>`).join("")}
-    ${s.cta?`<div class="sc-seg"><div class="sc-top"><span class="sc-name">CTA target</span></div>
-      <div class="sc-body">${esc(s.cta.question||"")}\n${esc(s.cta.lurker_onramp||"")}</div></div>`:""}`;
-
-  document.getElementById("sc-copy").onclick=e=>{
-    const lines=[`TITLE: ${s.working_title||k.keyword}`,`PREMISE: ${s.premise||""}`,
-      `EST RUNTIME: ${m}:${ss} (advisory — cut content, never talk faster)`,""];
-    (s.segments||[]).forEach(g=>{
-      lines.push(`[${g.name.toUpperCase()}] — ${g.pace.toUpperCase()}`);
-      lines.push(`DELIVERY: ${g.direction}`);
-      lines.push(g.script);
-      (g.broll||[]).forEach(c=>lines.push(`  B-ROLL on "${c.cue_phrase}" → ${c.visual}`));
-      lines.push("");
-    });
-    copy(lines.join("\n"),e.currentTarget);
-  };
-}
-function initScript(){
-  const sel=document.getElementById("sc-kw");
-  const withS=KW.filter(k=>k.script), ranked=[...KW].sort((a,b)=>(b.score??0)-(a.score??0));
-  document.getElementById("sc-n").textContent=`${withS.length} written`;
-  sel.innerHTML=ranked.map(k=>`<option value="${esc(k.keyword)}">${k.script?"✎ ":"○ "}${esc(k.keyword)}</option>`).join("");
-  if(withS.length) sel.value=withS[0].keyword;
-  sel.onchange=renderScript;
-  if(!ranked.length){document.getElementById("sc-out").innerHTML=`<div class="empty">No keywords yet.</div>`;return}
-  renderScript();
-}
-
 /* ---------- load ---------- */
 async function load(){
   try{
@@ -667,17 +395,15 @@ async function load(){
     KW=Object.values(snap.keywords||{}).map(k=>({
       keyword:k.keyword,score:k.scores?.composite??null,demand:k.scores?.demand,
       comp:k.scores?.competition_inverted,fit:k.scores?.channel_fit,depth:k.autocomplete_depth,
-      suggestions:k.suggestions||[],script:k.script||null,
       titles:(k.titles||[]).slice().sort((a,b)=>b.score-a.score)}));
-    VID=Object.entries((snap.own_channel||{}).videos||{}).map(([id,v])=>({
-      id,title:v.title||"(untitled)",views:v.views,
+    VID=Object.values((snap.own_channel||{}).videos||{}).map(v=>({
+      title:v.title||"(untitled)",views:v.views,
       pct:v.analytics?.avg_view_percentage??null,dur:v.analytics?.avg_view_duration_sec??null,
       subs:v.analytics?(v.analytics.subscribers_gained-v.analytics.subscribers_lost):null,
       seo:v.seo?.composite??null,kw:v.seo?.matched_keyword??null,
-      analysis:v.analysis||null,priority:v.analysis?.priority||"none",
-      drift:v.drift||null,pending:v.pending_changes||null,applied:v.applied||null}));
+      analysis:v.analysis||null,priority:v.analysis?.priority||"none"}));
     document.getElementById("meta").innerHTML=`Snapshot <strong>${esc(snap.date)}</strong> · ${KW.length} keywords · ${VID.length} videos · quota <strong>${snap.quota_units_used??"?"}</strong>/10,000`;
-    renderPQ();renderBars();renderScatter();renderFix();renderKw();renderVid();initPackage();initScript();
+    renderPQ();renderBars();renderScatter();renderFix();renderKw();renderVid();
   }catch(e){
     document.getElementById("meta").textContent="Could not load latest.json ("+e.message+")";
     document.querySelectorAll(".card-body .empty").forEach(el=>el.textContent="Load failed — check GH_USER/GH_REPO/GH_BRANCH and that the Action committed data/latest.json.");
