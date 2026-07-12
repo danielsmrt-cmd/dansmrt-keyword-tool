@@ -92,6 +92,22 @@ Runs locally / in Cowork. `broll_match.py` in the repo root.*
   started. Next session: push Stage 3, OAuth, first live apply on one video,
   then Stage 4 (retention-informed scoring + weekly digest), then `--topic`.
 
+## Retention playbook integration (2026-07-12)
+Adopted from Dan's B-roll/retention research doc:
+- script.py: every b-roll cue carries a PURPOSE (proof/emphasis/example/
+  transition/pacing); lines with no visual value get rewritten, not decorated;
+  scripts end with a LOOP CLOSURE that stitches the final line back to the hook.
+- broll_match.py: PACING GAP ANALYSIS — flags >2.5s stretches with no planned
+  visual change (Cliff risk) and <1.2s gaps (overload). B-roll is one kind of
+  visual change; flagged gaps get cuts/zooms/text in CapCut.
+- POST_PRODUCTION.md: full filming->upload checklist (audio cleanup BEFORE the
+  matcher, safe zones, captions at 65-70%, music at 5-10%, loop check, file
+  renaming before upload).
+REJECTED from the doc (conflicts with locked rules): the 130-word script cap
+(word budgets are retired — delivery directions govern pacing) and blanket
+40-55% silence-stripping (deliberate pauses are retention; only dead air gets
+cut).
+
 ## Stage 4 — Performance feedback into planning
 *Ongoing. The compounding stage — the system gets smarter every upload.*
 
