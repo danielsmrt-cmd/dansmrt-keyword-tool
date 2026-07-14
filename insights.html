@@ -86,6 +86,24 @@
     font-size:12px;padding:7px 11px;margin-top:6px;transition:.15s}
   .copybtn:hover{filter:brightness(.92)}
   .copybtn.done{background:var(--green)}
+  .copybtn.sm{font-size:11px;padding:4px 9px;margin-top:0}
+
+  /* ---- generate short ---- */
+  .pq-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .pq-btns .copybtn{margin-top:0}
+  .genbtn{background:transparent;color:var(--yellow);border:1.5px solid var(--yellow);border-radius:7px;cursor:pointer;
+    font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.03em;
+    font-size:12px;padding:6px 11px;transition:.15s}
+  .genbtn:hover{background:var(--yellow);color:var(--navy)}
+  .genbtn:disabled{opacity:.5;cursor:wait}
+  .gen-out:not(:empty){margin-top:10px}
+  .gen-loading{font-family:'Barlow Condensed',sans-serif;color:var(--muted);font-size:14px;padding:8px 0}
+  .gen-kit{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--border);padding-top:10px}
+  .kit-block{display:flex;flex-direction:column;gap:4px}
+  .kit-head{display:flex;justify-content:space-between;align-items:center}
+  .kit-head span{font-family:'Oswald',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--yellow)}
+  .kit-ta{width:100%;background:#0d1626;color:var(--text);border:1px solid var(--border);border-radius:6px;
+    font-family:'Barlow Condensed',sans-serif;font-size:14px;line-height:1.4;padding:8px 10px;resize:vertical;min-height:52px}
 
   /* ---- pills ---- */
   .pill{display:inline-block;min-width:44px;text-align:center;padding:4px 10px;border-radius:999px;
@@ -368,7 +386,11 @@ function renderPQ(){
         <div class="pq-kw">${esc(k.keyword)}</div>
         <div class="pq-sub">${esc(whyLine(k))}</div>
         <div class="pq-sub">${best?`Best title: <span class="best">${esc(best.title)}</span> <span class="pill sm ${scoreCls(best.score)}">${best.score}</span>`:'No generated titles yet — run titles'}</div>
-        <button class="copybtn" data-copy="${i}">Copy for pipeline</button>
+        <div class="pq-btns">
+          <button class="copybtn" data-copy="${i}">Copy for pipeline</button>
+          <button class="genbtn" data-gen="${i}">⚡ Generate Short</button>
+        </div>
+        <div class="gen-out" id="gen-out-${i}"></div>
       </div>
       <div class="pq-score">${pill(k.score)}<div class="sub" style="margin-top:4px">fit ${Math.round(k.fit??0)}</div></div>
     </div>`}).join("")||`<div class="empty">No keywords yet.</div>`;
@@ -377,6 +399,56 @@ function renderPQ(){
     if(k.titles&&k.titles.length){lines.push("TOP TITLES:");k.titles.slice(0,5).forEach(t=>lines.push(`- ${t.title} (${t.score})`))}
     copy(lines.join("\n"),b);
   });
+  document.querySelectorAll("#pq [data-gen]").forEach(b=>b.onclick=()=>generateShort(ranked[+b.dataset.gen],+b.dataset.gen,b));
+}
+
+/* ---------- Generate Short (direct Claude API, no vidIQ) ---------- */
+async function generateShort(k,i,btn){
+  const out=document.getElementById("gen-out-"+i);
+  btn.disabled=true;const label=btn.textContent;btn.textContent="Generating…";
+  out.innerHTML=`<div class="gen-loading">Writing your Short from cached research… ~15s</div>`;
+  const sugg=(k.suggestions||[]).slice(0,20).join(", ");
+  const sys=`You are a YouTube Shorts writer for DanSmrtCoaching, a fitness & nutrition coach for adults 40+.
+BRAND: Coaching framework is K.I.S.S. of D.E.S.S. (Keep It Stupid Simple: Diet, Exercise, Sleep, Stress). Audience is adults 40+. Voice: direct, warm, no hype, no jargon, no fear-mongering. On-screen hook card text is yellow (#FFFF00) on navy (#1B2A4A).
+SCRIPT PACING (critical — do NOT write to a fixed words-per-second budget): write the script the content demands, then give each segment a delivery direction, not a word count. New/complex info = slow, pause after the key claim. Familiar/relatable info = fast. Hook = whatever lands it; clarity beats speed in the first 3 seconds. Punchline/reveal = fast into it, then PAUSE on it. CTA = clear and unhurried.
+B-ROLL: anchor every cue to a specific spoken phrase from the script, never to a timestamp.
+Target length: about 45 seconds spoken.
+Respond with ONLY valid JSON, no markdown fences, no preamble, this exact shape:
+{"title":"YouTube title, <60 chars, keyword-led, in-voice","script":[{"line":"spoken sentence","delivery":"pace/emphasis/pause direction"}],"cards":["on-screen text card 1 = hook","card 2","…"],"broll":[{"cue":"exact spoken phrase from script","shot":"what to show"}],"description":"YouTube description, keyword in first 25 words, 2-3 sentences + a CTA to DanSmrtCoaching","tags":["tag1","…10-12 tags, exact + phrase-match keyword variants first"]}`;
+  const usr=`TOPIC / TARGET KEYWORD: ${k.keyword}
+OPPORTUNITY SCORE: ${Math.round(k.score)}/100 (demand ${Math.round(k.demand??0)}, competition-inverted ${Math.round(k.comp??0)}, channel-fit ${Math.round(k.fit??0)})
+AUTOCOMPLETE VARIANTS people actually search: ${sugg||"(none cached)"}
+Write the complete Short kit now.`;
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system:sys,messages:[{role:"user",content:usr}]})
+    });
+    if(!res.ok)throw new Error("HTTP "+res.status);
+    const data=await res.json();
+    const text=data.content.filter(b=>b.type==="text").map(b=>b.text).join("").replace(/```json|```/g,"").trim();
+    const kit=JSON.parse(text);
+    renderKit(out,kit);
+  }catch(e){
+    out.innerHTML=`<div class="gen-loading" style="color:var(--red)">Generation failed: ${esc(e.message)}. Try again.</div>`;
+  }finally{btn.disabled=false;btn.textContent=label;}
+}
+function renderKit(out,kit){
+  const scriptTxt=(kit.script||[]).map(s=>`${s.line}\n   [${s.delivery}]`).join("\n\n");
+  const cardsTxt=(kit.cards||[]).map((c,n)=>`${n+1}. ${c}`).join("\n");
+  const brollTxt=(kit.broll||[]).map(b=>`"${b.cue}" → ${b.shot}`).join("\n");
+  const tagsTxt=(kit.tags||[]).join(", ");
+  const block=(label,val,id)=>`<div class="kit-block"><div class="kit-head"><span>${label}</span><button class="copybtn sm" data-kit="${id}">Copy</button></div><textarea class="kit-ta" id="${id}" readonly>${esc(val)}</textarea></div>`;
+  const uid=Math.random().toString(36).slice(2,7);
+  out.innerHTML=`<div class="gen-kit">
+    ${block("TITLE",kit.title||"",`k-t-${uid}`)}
+    ${block("SCRIPT (with delivery directions)",scriptTxt,`k-s-${uid}`)}
+    ${block("ON-SCREEN TEXT CARDS (card 1 = hook, yellow)",cardsTxt,`k-c-${uid}`)}
+    ${block("B-ROLL CUES (anchored to spoken phrases)",brollTxt,`k-b-${uid}`)}
+    ${block("YOUTUBE DESCRIPTION",kit.description||"",`k-d-${uid}`)}
+    ${block("TAGS",tagsTxt,`k-g-${uid}`)}
+  </div>`;
+  out.querySelectorAll("[data-kit]").forEach(b=>b.onclick=()=>{const ta=document.getElementById(b.dataset.kit);copy(ta.value,b);});
 }
 
 /* ---------- opportunity bars ---------- */
