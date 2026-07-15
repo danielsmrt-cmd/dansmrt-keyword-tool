@@ -40,22 +40,64 @@ from score import tokenize  # reuse the same tokenizer/stopword list
 log = logging.getLogger("seo")
 
 
-def best_matching_keyword(video, keywords_data):
-    """keywords_data: {kw: set_of_tokens} built from kw + its suggestions.
-    Returns (keyword, overlap_score) or (None, 0) if nothing overlaps at all."""
+def _token_idf(keywords_core):
+    """Document-frequency weighting across the SEED KEYWORD SET.
+    A token that appears in the core of many seed keywords is generic
+    ("40", "weight", "loss") and should barely count toward a match; a token
+    unique to one keyword ("protein", "circadian", "cardio") is distinctive
+    and should dominate. Returns {token: weight} where weight = log(N / df).
+    """
+    import math
+    n = max(1, len(keywords_core))
+    df = {}
+    for toks in keywords_core.values():
+        for t in set(toks):
+            df[t] = df.get(t, 0) + 1
+    # +1 smoothing; a token in ALL keywords gets weight ~0, a token in 1 gets the max.
+    return {t: math.log((n + 1) / (c + 0.5)) for t, c in df.items()}
+
+
+def best_matching_keyword(video, keywords_data, keywords_core, idf):
+    """Rarity-weighted, two-sided keyword->video matching.
+
+    keywords_data: {kw: tokens from kw + its autocomplete suggestions} (recall net)
+    keywords_core: {kw: tokens from the keyword phrase ITSELF} (must-have signal)
+    idf:           {token: rarity weight} across the seed set
+
+    A keyword only matches if the video contains its DISTINCTIVE core tokens —
+    not just generic age/topic words shared across the whole seed set. The score
+    is the rarity-weighted overlap of the keyword's own phrase tokens, so
+    "protein for adults over 40" can no longer win on {adults, 40} alone when
+    "protein" is nowhere in the video.
+    Returns (keyword, score) or (None, 0.0).
+    """
     vid_tokens = tokenize(video.get("title", "")) | set(
         t for tag in video.get("tags", []) for t in tokenize(tag)
     )
     if not vid_tokens or not keywords_data:
         return None, 0.0
+
     best_kw, best_score = None, 0.0
     for kw, kw_tokens in keywords_data.items():
-        if not kw_tokens:
+        core = keywords_core.get(kw, set())
+        if not core:
             continue
-        inter = vid_tokens & kw_tokens
-        score = len(inter) / len(kw_tokens)
-        if score > best_score:
-            best_kw, best_score = kw, score
+        # Rarity-weighted coverage of the keyword's OWN phrase tokens.
+        core_hit = core & vid_tokens
+        num = sum(idf.get(t, 0.0) for t in core_hit)
+        den = sum(idf.get(t, 0.0) for t in core)
+        if den == 0:
+            continue
+        weighted = num / den
+
+        # Gate: the single most distinctive token in the keyword's core MUST be
+        # present. This is what blocks a match built only on generic tokens.
+        rarest = max(core, key=lambda t: idf.get(t, 0.0))
+        if rarest not in vid_tokens:
+            continue
+
+        if weighted > best_score:
+            best_kw, best_score = kw, weighted
     return best_kw, best_score
 
 
@@ -108,22 +150,26 @@ def main():
         log.warning("No own-channel videos cached yet — run collect.py first")
         return
 
-    # Build keyword -> token set (keyword + its autocomplete suggestions from
-    # today's snapshot, if available).
-    keywords_data = {}
+    # Build two token sets per keyword:
+    #   keywords_core = tokens from the keyword phrase itself (the must-have signal)
+    #   keywords_data = core + autocomplete suggestions (the wider recall net)
+    keywords_core, keywords_data = {}, {}
     for kw in common.load_keywords():
         rec = snap["keywords"].get(kw, {})
-        toks = tokenize(kw)
+        core = tokenize(kw)
+        keywords_core[kw] = core
+        toks = set(core)
         for s in rec.get("suggestions", [])[:20]:
             toks |= tokenize(s)
         keywords_data[kw] = toks
+    idf = _token_idf(keywords_core)
 
     seo_results = {}
     for vid in video_ids:
         video = cache.get("videos", {}).get(vid)
         if not video:
             continue
-        kw, overlap = best_matching_keyword(video, keywords_data)
+        kw, overlap = best_matching_keyword(video, keywords_data, keywords_core, idf)
         if not kw or overlap == 0:
             seo_results[vid] = {
                 "matched_keyword": None, "composite": None,
