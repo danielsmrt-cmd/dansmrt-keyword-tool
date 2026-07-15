@@ -122,7 +122,15 @@ def momentum_score(rec):
     return (m + 1) / 2 * 100  # [-1,1] -> 0..100
 
 
-def channel_fit_score(rec, own_tokens) -> float:
+# Balanced retention blend: channel-fit = 60% topical overlap + 40% retention.
+# Topical still leads; retention reorders close calls without letting one
+# loopy Short dominate (channel-fit is 20% of the composite, so retention ends
+# up ~8% of the total score).
+W_FIT_TOPICAL = 0.60
+W_FIT_RETENTION = 0.40
+
+
+def topical_fit_score(rec, own_tokens) -> float:
     if not own_tokens:
         return 50.0  # no own-channel data yet — neutral
     kw_tokens = tokenize(rec["keyword"])
@@ -135,6 +143,41 @@ def channel_fit_score(rec, own_tokens) -> float:
     jaccard = len(inter) / len(union)
     # Jaccard on these set sizes is tiny in absolute terms; rescale so ~0.15 = 100.
     return min(1.0, jaccard / 0.15) * 100
+
+
+def build_keyword_retention(cache):
+    """Map each keyword -> average clamped retention of the videos that seo.py
+    matched to it. Returns {keyword: retention_0_100}. Keywords with no matched
+    video are absent (caller treats absence as neutral 50 — untested, not bad).
+    Uses the already-computed seo match (own_video_record[...]['seo']
+    ['matched_keyword']) so we don't re-run matching here.
+    """
+    own = cache.get("own_channel", {})
+    videos = own.get("videos", {})
+    bucket = {}
+    for vid, v in videos.items():
+        seo = v.get("seo") or {}
+        kw = seo.get("matched_keyword")
+        if not kw:
+            continue
+        a = v.get("analytics") or {}
+        ret = a.get("retention_clamped")
+        if ret is None:
+            # older snapshots may only have raw avg_view_percentage
+            raw = a.get("avg_view_percentage")
+            if raw is None:
+                continue
+            ret = min(raw, 100.0)
+        bucket.setdefault(kw, []).append(ret)
+    return {kw: sum(v) / len(v) for kw, v in bucket.items() if v}
+
+
+def channel_fit_score(rec, own_tokens, kw_retention) -> float:
+    topical = topical_fit_score(rec, own_tokens)
+    ret = kw_retention.get(rec["keyword"])
+    if ret is None:
+        return topical  # untested topic — fall back to pure topical fit
+    return W_FIT_TOPICAL * topical + W_FIT_RETENTION * ret
 
 
 def build_own_tokens(cache) -> set:
@@ -152,6 +195,7 @@ def main():
     snap = common.load_snapshot()
     cache = common.load_cache()
     own_tokens = build_own_tokens(cache)
+    kw_retention = build_keyword_retention(cache)
 
     records = list(snap["keywords"].values())
     max_depth = max((r.get("autocomplete_depth") or 0) for r in records) if records else 0
@@ -160,7 +204,7 @@ def main():
         comp = competition_score(rec.get("top_videos", []))
         dem = demand_score(rec, max_depth)
         mom = momentum_score(rec)
-        fit = channel_fit_score(rec, own_tokens)
+        fit = channel_fit_score(rec, own_tokens, kw_retention)
 
         comp_inv = 100 - comp  # invert: low competition = high contribution
 
@@ -182,6 +226,8 @@ def main():
             "demand": round(dem, 1),
             "momentum": None if mom is None else round(mom, 1),
             "channel_fit": round(fit, 1),
+            "retention_signal": (None if kw_retention.get(rec["keyword"]) is None
+                                 else round(kw_retention[rec["keyword"]], 1)),
             "weights_used": ("no_trend" if mom is None else "standard"),
         }
         log.info("'%s' → %.1f (comp_inv %.0f, demand %.0f, momentum %s, fit %.0f)",
