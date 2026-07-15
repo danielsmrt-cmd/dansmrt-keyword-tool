@@ -28,6 +28,14 @@ on:
         type: choice
         options: [short, long]
         default: short
+      apply_video:
+        description: "WRITE to YouTube: video ID to apply approved fixes to (leave blank = no writes)"
+        required: false
+      apply_fields:
+        description: "Which fields to write"
+        type: choice
+        options: [title, tags, "title,tags", "title,description,tags"]
+        default: "title,tags"
 
 permissions:
   contents: write
@@ -63,9 +71,6 @@ jobs:
         continue-on-error: true
         run: python scripts/trends.py
 
-      - name: Opportunity Score
-        run: python scripts/score.py
-
       - name: Channel Analytics (watch time, retention — skips gracefully until OAuth is set up)
         env:
           YT_OAUTH_CLIENT_ID: ${{ secrets.YT_OAUTH_CLIENT_ID }}
@@ -75,6 +80,9 @@ jobs:
 
       - name: Video SEO Score (own uploads)
         run: python scripts/seo.py
+
+      - name: Opportunity Score (after analytics + seo so retention/matches feed channel-fit)
+        run: python scripts/score.py
 
       - name: Claude Fix-Panel analysis (only new/changed videos — cheap)
         env:
@@ -107,6 +115,24 @@ jobs:
           else
             python scripts/script.py --format "${{ inputs.script_format }}"
           fi
+
+      - name: Drift detection (published vs live — zero API cost)
+        run: python scripts/drift.py
+
+      - name: Weekly digest (last video, week-over-week changes, top pick)
+        run: python scripts/digest.py
+
+      - name: Apply approved fixes to YouTube (WRITES — only when apply_video is set)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.apply_video != '' }}
+        env:
+          YT_OAUTH_CLIENT_ID: ${{ secrets.YT_OAUTH_CLIENT_ID }}
+          YT_OAUTH_CLIENT_SECRET: ${{ secrets.YT_OAUTH_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          python scripts/apply.py \
+            --video "${{ inputs.apply_video }}" \
+            --fields "${{ inputs.apply_fields }}" \
+            --apply
 
       - name: Commit snapshot
         run: |
