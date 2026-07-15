@@ -117,10 +117,18 @@ def main():
         vid = row.get("video")
         if not vid:
             continue
+        raw_pct = row.get("averageViewPercentage", 0.0) or 0.0
+        # Looping Shorts can report averageViewDuration > video length, pushing
+        # averageViewPercentage past 100%. That's a loop artifact, not a
+        # retention signal. Clamp for scoring: a fully-watched (or looped) video
+        # tops out at 100% — the ceiling of "how well my audience finishes this."
+        # The raw value is preserved separately for transparency.
         entry = {
             "estimated_minutes_watched": row.get("estimatedMinutesWatched", 0),
             "avg_view_duration_sec": row.get("averageViewDuration", 0),
-            "avg_view_percentage": row.get("averageViewPercentage", 0.0),
+            "avg_view_percentage": raw_pct,
+            "retention_clamped": min(raw_pct, 100.0),
+            "looped": raw_pct > 100.0,
             "views_window": row.get("views", 0),
             "subscribers_gained": row.get("subscribersGained", 0),
             "subscribers_lost": row.get("subscribersLost", 0),
