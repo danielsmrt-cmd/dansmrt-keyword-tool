@@ -346,6 +346,7 @@
             <span class="duo-title">Script</span>
             <div style="display:flex;gap:8px">
               <button class="copybtn sm" id="sc-copy" style="display:none">Copy script</button>
+              <button class="copybtn sm" id="sc-save" style="display:none">⬇ Save script</button>
               <button class="copybtn sm" data-duo="duo-script">⤤ Expand</button>
             </div>
           </div>
@@ -412,6 +413,26 @@ const scoreCls=v=>v==null?"grey":v>=70?"green":v>=40?"amber":"red";
 const pctCls=v=>v==null?"grey":v>=50?"green":v>=30?"amber":"red";
 function pill(v,sm){return `<span class="pill ${scoreCls(v)}${sm?' sm':''}">${v==null?"—":Math.round(v)}</span>`}
 function copy(txt,btn,label){navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent=label||"Copied ✓";btn.classList.add("done");setTimeout(()=>{btn.textContent=o;btn.classList.remove("done")},1500)}).catch(()=>btn.textContent="Failed")}
+function download(filename,text){
+  const blob=new Blob([text],{type:"text/plain"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download=filename;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function slugify(s){return String(s||"script").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,60)||"script"}
+function buildScriptText(s,keyword){
+  const m=Math.floor(s.est_runtime_sec/60),ss=String(s.est_runtime_sec%60).padStart(2,"0");
+  const lines=[`TITLE: ${s.working_title||keyword}`,`PREMISE: ${s.premise||""}`,`EST RUNTIME: ${m}:${ss}`,`LOOP CLOSURE: ${s.loop_closure||""}`,`DESS: ${(s.dess_pillars||[]).join(", ")}`,""];
+  (s.segments||[]).forEach(g=>{
+    lines.push(`[${g.name.toUpperCase()}] \u2014 ${g.pace.toUpperCase()}`);
+    lines.push(`DELIVERY: ${g.direction}`);lines.push(g.script);
+    (g.broll||[]).forEach(c=>lines.push(`  B-ROLL on "${c.cue_phrase}" \u2192 ${c.visual} [${c.purpose}]`));
+    lines.push("");
+  });
+  if(s.cta){lines.push("[CTA]");lines.push(s.cta.question);lines.push(s.cta.lurker_onramp);}
+  return lines.join("\n");
+}
 
 /* ---------- maximize ---------- */
 function bindExpand(){
@@ -489,10 +510,11 @@ async function generateShort(k,i,btn){
   const scOut=document.getElementById("sc-out");
   const scLabel=document.getElementById("sc-kw-label");
   const scCopy=document.getElementById("sc-copy");
+  const scSave=document.getElementById("sc-save");
   btn.disabled=true;const label=btn.textContent;btn.textContent="Generating\u2026";
   document.querySelectorAll(".gen-out").forEach(el=>el.innerHTML="");switchTab("script");
   scOut.innerHTML=`<div class="sc-premise">Writing script for <b>${esc(k.keyword)}</b>\u2026 ~20s</div>`;
-  scLabel.textContent=k.keyword;scCopy.style.display="none";
+  scLabel.textContent=k.keyword;scCopy.style.display="none";scSave.style.display="none";
   const sugg=(k.suggestions||[]).slice(0,20).join(", ");
   const usr=`Target keyword: "${k.keyword}"
 Format: Short (vertical, ~45 seconds). Soft duration target: 45s.
@@ -518,18 +540,12 @@ Segment names: Hook, Turn, Payoff, CTA. FINAL segment must be CTA.`;
     });
     s.est_runtime_sec=totalSec;k.script=s;
     renderScriptData(s);
-    scCopy.style.display="";
-    scCopy.onclick=()=>{
-      const m=Math.floor(s.est_runtime_sec/60),ss=String(s.est_runtime_sec%60).padStart(2,"0");
-      const lines=[`TITLE: ${s.working_title||k.keyword}`,`PREMISE: ${s.premise||""}`,`EST RUNTIME: ${m}:${ss}`,`LOOP CLOSURE: ${s.loop_closure||""}`,`DESS: ${(s.dess_pillars||[]).join(", ")}`,""];
-      (s.segments||[]).forEach(g=>{
-        lines.push(`[${g.name.toUpperCase()}] \u2014 ${g.pace.toUpperCase()}`);
-        lines.push(`DELIVERY: ${g.direction}`);lines.push(g.script);
-        (g.broll||[]).forEach(c=>lines.push(`  B-ROLL on "${c.cue_phrase}" \u2192 ${c.visual} [${c.purpose}]`));
-        lines.push("");
-      });
-      if(s.cta){lines.push("[CTA]");lines.push(s.cta.question);lines.push(s.cta.lurker_onramp);}
-      copy(lines.join("\n"),scCopy);
+    scCopy.style.display="";scSave.style.display="";
+    scCopy.onclick=()=>copy(buildScriptText(s,k.keyword),scCopy);
+    scSave.onclick=()=>{
+      download(`${slugify(s.working_title||k.keyword)}.txt`,buildScriptText(s,k.keyword));
+      const o=scSave.textContent;scSave.textContent="Saved \u2713";scSave.classList.add("done");
+      setTimeout(()=>{scSave.textContent=o;scSave.classList.remove("done")},1500);
     };
   }catch(e){
     scOut.innerHTML=`<div class="sc-premise" style="color:var(--red)">Failed: ${esc(e.message)}</div>`;
