@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Map — DanSmrtCoaching</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B2A4A;
+    --navy-lift:#243559;
+    --navy-line:#33456e;
+    --yellow:#FFFF00;
+    --ink:#e8ecf5;
+    --muted:#93a0bd;
+    --proof:#4ad6a0;
+    --punct:#ffb454;
+    --interrupt:#ff5d73;
+    --warn:#ff5d73;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--navy);
+    color:var(--ink);
+    font-family:'Barlow Condensed',system-ui,sans-serif;
+    font-weight:500;
+    font-size:18px;
+    line-height:1.35;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.dir{font-family:'Oswald',sans-serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 26px 90px;}
+
+  /* Header */
+  header{display:flex;align-items:baseline;justify-content:space-between;gap:20px;border-bottom:2px solid var(--navy-line);padding-bottom:16px;margin-bottom:26px;flex-wrap:wrap;}
+  .brand{font-family:'Oswald';font-weight:700;font-size:30px;letter-spacing:.5px;text-transform:uppercase;line-height:1;}
+  .brand .mk{color:var(--yellow);}
+  .brand .sub{display:block;font-family:'Barlow Condensed';font-weight:600;font-size:15px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:6px;}
+  .tag{font-size:16px;color:var(--muted);max-width:360px;text-align:right;}
+
+  /* Layout */
+  .grid{display:grid;grid-template-columns:400px 1fr;gap:26px;align-items:start;}
+  @media(max-width:880px){.grid{grid-template-columns:1fr;}}
+
+  .panel{background:var(--navy-lift);border:1px solid var(--navy-line);border-radius:10px;padding:20px;}
+  .panel h2{margin:0 0 4px;font-weight:700;font-size:20px;text-transform:uppercase;letter-spacing:1px;}
+  .panel .hint{color:var(--muted);font-size:15px;margin:0 0 16px;}
+
+  label{display:block;font-family:'Oswald';font-weight:500;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px;}
+  textarea, select, input[type=number]{
+    width:100%;background:var(--navy);color:var(--ink);border:1px solid var(--navy-line);
+    border-radius:7px;padding:11px 12px;font-family:'Barlow Condensed';font-size:17px;font-weight:500;
+  }
+  textarea{min-height:230px;resize:vertical;line-height:1.4;}
+  textarea:focus,select:focus,input:focus{outline:2px solid var(--yellow);outline-offset:0;}
+  .row{display:flex;gap:12px;}
+  .row>div{flex:1;}
+
+  .fmt{margin-top:8px;font-size:14px;color:var(--muted);min-height:20px;}
+  .fmt b{color:var(--yellow);font-weight:600;}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;cursor:pointer;border:none;border-radius:7px;
+    font-family:'Oswald';font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;
+    padding:13px 20px;transition:transform .04s ease,filter .15s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--yellow);color:var(--navy);width:100%;justify-content:center;margin-top:18px;font-size:17px;padding:15px;}
+  .btn-primary:hover{filter:brightness(1.05);}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--yellow);border:1px solid var(--navy-line);}
+  .btn-ghost:hover{border-color:var(--yellow);}
+
+  /* Output */
+  .out-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap;}
+  .out-head h2{margin:0;font-family:'Oswald';font-weight:700;font-size:20px;text-transform:uppercase;letter-spacing:1px;}
+  .out-actions{display:flex;gap:10px;flex-wrap:wrap;}
+
+  .meter{display:flex;align-items:center;gap:12px;background:var(--navy);border:1px solid var(--navy-line);border-radius:8px;padding:12px 15px;margin-bottom:18px;}
+  .meter .big{font-family:'Oswald';font-weight:700;font-size:26px;color:var(--yellow);line-height:1;}
+  .meter .lbl{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+  .meter.over .big{color:var(--warn);}
+  .meter .spacer{flex:1;}
+  .pill{font-family:'Oswald';font-weight:500;font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:20px;border:1px solid var(--navy-line);color:var(--muted);}
+  .pill.over{color:var(--warn);border-color:var(--warn);}
+  .pill.ok{color:var(--proof);border-color:var(--proof);}
+
+  /* Cue cards */
+  .cue{background:var(--navy);border:1px solid var(--navy-line);border-left:4px solid var(--muted);border-radius:8px;padding:14px 16px;margin-bottom:12px;}
+  .cue.proof{border-left-color:var(--proof);}
+  .cue.punctuation{border-left-color:var(--punct);}
+  .cue.interrupt{border-left-color:var(--interrupt);}
+  .cue-top{display:flex;align-items:center;gap:10px;margin-bottom:9px;flex-wrap:wrap;}
+  .tc{font-family:'Oswald';font-weight:500;font-size:13px;color:var(--yellow);letter-spacing:.5px;background:var(--navy-lift);padding:3px 8px;border-radius:5px;}
+  .purpose{font-family:'Oswald';font-weight:500;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;}
+  .purpose.proof{color:var(--proof);background:rgba(74,214,160,.12);}
+  .purpose.punctuation{color:var(--punct);background:rgba(255,180,84,.12);}
+  .purpose.interrupt{color:var(--interrupt);background:rgba(255,93,115,.12);}
+  .anchor{font-size:16px;color:var(--muted);font-style:italic;}
+  .anchor b{color:var(--ink);font-style:normal;font-weight:600;}
+  .cue-body{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+  @media(max-width:560px){.cue-body{grid-template-columns:1fr;}}
+  .field .k{font-family:'Oswald';font-weight:500;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+  .field .v{font-size:16px;line-height:1.3;}
+  .field .v.dir{color:var(--yellow);font-weight:600;}
+  .why{grid-column:1/-1;font-size:15px;color:var(--muted);border-top:1px dashed var(--navy-line);padding-top:8px;margin-top:2px;}
+
+  .src{font-family:'Oswald';font-weight:500;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid var(--navy-line);}
+  .src.foot{color:var(--muted);}
+  .src.gfx{color:var(--navy);background:var(--yellow);border-color:var(--yellow);}
+  .cue.is-gfx{border-left-color:var(--yellow);}
+
+  .dprompt{grid-column:1/-1;background:var(--navy-lift);border:1px solid var(--yellow);border-radius:7px;padding:10px 12px;margin-top:4px;}
+  .dp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .dp-k{font-family:'Oswald';font-weight:500;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);}
+  .dp-body{font-size:15px;line-height:1.35;color:var(--ink);white-space:pre-wrap;}
+  .dp-copy{cursor:pointer;background:var(--yellow);color:var(--navy);border:none;border-radius:5px;font-family:'Oswald';font-weight:700;font-size:12px;letter-spacing:.5px;text-transform:uppercase;padding:5px 12px;}
+  .dp-copy:active{transform:translateY(1px);}
+
+  .brandbox{background:var(--navy);border:1px solid var(--yellow);border-radius:8px;padding:14px 16px;margin-top:18px;}
+  .bb-head{font-family:'Oswald';font-weight:700;font-size:15px;letter-spacing:.5px;text-transform:uppercase;color:var(--yellow);margin-bottom:12px;}
+  .bb-row{display:grid;grid-template-columns:130px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-top:1px dashed var(--navy-line);}
+  @media(max-width:560px){.bb-row{grid-template-columns:1fr auto;}.bb-name{grid-column:1/-1;}}
+  .bb-name{font-family:'Oswald';font-weight:600;font-size:14px;color:var(--ink);}
+  .bb-prompt{font-size:14px;color:var(--muted);line-height:1.3;}
+
+  .notes{background:var(--navy);border:1px solid var(--navy-line);border-radius:8px;padding:14px 16px;margin-top:18px;font-size:16px;color:var(--muted);}
+  .notes b{color:var(--yellow);font-weight:600;}
+
+  .empty{color:var(--muted);text-align:center;padding:60px 20px;font-size:17px;}
+  .empty .em-ic{font-size:40px;display:block;margin-bottom:12px;opacity:.6;}
+
+  .err{background:rgba(255,93,115,.1);border:1px solid var(--warn);color:#ffd0d6;border-radius:8px;padding:13px 16px;font-size:16px;margin-top:16px;}
+  .spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(27,42,74,.3);border-top-color:var(--navy);border-radius:50%;animation:sp .7s linear infinite;}
+  @keyframes sp{to{transform:rotate(360deg);}}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--yellow);color:var(--navy);font-family:'Oswald';font-weight:700;font-size:15px;letter-spacing:.5px;padding:12px 22px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;}
+  .toast.show{opacity:1;}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:16px;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:10px;height:10px;border-radius:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">Dan<span class="mk">Smrt</span> · Edit Map<span class="sub">B-Roll Placement + Engagement Effects</span></div>
+    <div class="tag">Paste a transcript. Get an anchored b-roll + effects map and a CapCut-ready marker track. Built for videos up to 90s.</div>
+  </header>
+
+  <div class="grid">
+    <!-- INPUT -->
+    <div class="panel">
+      <h2>Transcript</h2>
+      <p class="hint">Timestamped (SRT / CapCut caption export / whisper) or plain text — both work.</p>
+      <textarea id="tx" placeholder="Paste your transcript here…
+
+Timestamped works best:
+00:00:00,000 --> 00:00:03,200
+Your metabolism isn't broken.
+
+…or just paste the plain script and it'll estimate timing from pacing."></textarea>
+      <div class="fmt" id="fmt"></div>
+
+      <div class="row">
+        <div>
+          <label>Video type</label>
+          <select id="vtype">
+            <option value="short">Short / Reel (2–4s cuts)</option>
+            <option value="long">Long-form (5–8s cuts)</option>
+          </select>
+        </div>
+        <div>
+          <label>Max seconds</label>
+          <input type="number" id="maxsec" value="90" min="10" max="600">
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="go">Build Edit Map</button>
+      <div id="inerr"></div>
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="panel">
+      <div class="out-head">
+        <h2>Edit Map</h2>
+        <div class="out-actions" id="acts" style="display:none;">
+          <button class="btn btn-ghost" id="dlsrt">⬇ SRT marker track</button>
+          <button class="btn btn-ghost" id="copyall">Copy map</button>
+          <button class="btn btn-ghost" id="regen">Regenerate</button>
+        </div>
+      </div>
+      <div id="out">
+        <div class="empty"><span class="em-ic">🎬</span>Your anchored b-roll + effects map will appear here.<br>Cut against it in CapCut, then import the SRT so the cues sit right on your timeline.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const tx = $('#tx'), fmt = $('#fmt'), out = $('#out'), acts = $('#acts');
+let lastData = null, lastSrtBlob = null;
+
+// ---- format detection ----
+const srtTime = /(\d{1,2}:\d{2}:\d{2}[,.]\d{1,3})\s*-->\s*(\d{1,2}:\d{2}:\d{2}[,.]\d{1,3})/;
+const looseTime = /\b\d{1,2}:\d{2}(:\d{2})?\b/;
+function detect(t){
+  if(!t.trim()) return {kind:'', msg:''};
+  if(srtTime.test(t)) return {kind:'srt', msg:'Detected <b>timestamped</b> transcript — cues will use your exact times.'};
+  if(looseTime.test(t)) return {kind:'loose', msg:'Detected <b>loose timestamps</b> — cues will use them where present.'};
+  return {kind:'plain', msg:'Detected <b>plain text</b> — timing estimated from delivery pacing.'};
+}
+tx.addEventListener('input', ()=>{ fmt.innerHTML = detect(tx.value).msg; });
+
+// ---- toast ----
+let tt;
+function toast(m){ const el=$('#toast'); el.textContent=m; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),1600); }
+
+// ---- build prompt ----
+function buildPrompt(transcript, kind, vtype, maxsec){
+  const cadence = vtype==='short' ? '2–4 seconds' : '5–8 seconds';
+  const timing = kind==='plain'
+    ? 'The transcript has NO timestamps. Estimate a start/end (HH:MM:SS,mmm) for each cue from natural delivery pacing — new or complex claims land slower (with a pause after the key claim), familiar/relatable lines move faster, the hook prioritizes clarity over speed. Keep total under the max.'
+    : 'The transcript HAS timestamps. Anchor every cue to the spoken words and use the transcript\'s own times for start/end — do not invent a different clock.';
+
+  return `You are the video editor for DanSmrtCoaching, a fitness/nutrition channel for adults 40+. Analyze the transcript and return a b-roll + engagement-effects edit map for a video no longer than ${maxsec} seconds. This is a ${vtype==='short'?'Short/Reel':'long-form'} video.
+
+RULES:
+- Anchor every b-roll cue to specific spoken words (the "anchor" is the exact phrase the cut lands on). ${timing}
+- Cut cadence: insert b-roll or a reframe roughly every ${cadence}. Never let a talking-head shot run longer than 6–8 seconds without a cut, reframe, or b-roll.
+- Every cue has ONE purpose: "proof" (visually proves/demonstrates the claim), "punctuation" (punches an emotional or payoff beat), or "interrupt" (a pattern interrupt to reset attention). Use an "interrupt" roughly every 3rd–4th cue so the rhythm doesn't feel robotic.
+- Assign ONE effect per cue from this vocabulary, doable in CapCut Pro: "slow zoom in" or "slow zoom out" (keep scale change under ~15%), "punch-in" (quick scale jump on emphasis), "speed ramp up 1.1–1.3x" (energy/hook), "slow-mo 0.5x" (payoff/emotional), "text pop-in" (on-screen caption reinforcing the point — good for sound-off 40+ viewers), "whip transition" or "zoom-blur transition" (ration these — at most once per 20–30s, only between real segments).
+- b-roll shot descriptions are concrete and shootable/stock-able, tied to what's being said. No timestamps inside the shot text.
+- Keep it purposeful: quality over quantity. A ${maxsec}s Short typically needs a tight set of strong cues, not a cue on every word.
+
+CLASSIFY each cue's "source":
+- "footage" — something Dan films himself or pulls as real-world stock (a person, food, a gym, a scale, a hand gesture). Most cues.
+- "graphic" — better built as motion graphics than shot on camera: a stat/number callout, an animated chart or graph, a labelled diagram, a framework reveal (e.g. the D.E.S.S. acronym), a definition card, an animated CTA card. Anything that's data, text, or an abstract concept rather than a filmable object.
+For every "graphic" cue, also write a "design_prompt": a ready-to-paste prompt for Claude Design (claude.ai/design) that builds that specific animation. The design_prompt MUST bake in the brand: navy #1B2A4A background, yellow #FFFF00 for text/highlights/accents, Oswald Bold headlines, Barlow Condensed Bold body, 1080×1920 vertical for a Short (1280×720 for long-form). State the exact text/numbers to show, how elements animate in, and the duration (match the cue length). Keep it 2–4 sentences. For "footage" cues, set "design_prompt" to "".
+
+Also return "brand_elements": a short list of reusable branded pieces that belong in EVERY video and should be built ONCE in Claude Design, not per-cue (e.g. intro bumper, outro/subscribe card, lower-third name tag). For each: "name" and a one-line "design_prompt" with the brand tokens. Keep to 2–4 items.
+
+Estimate the total spoken duration in seconds and whether it exceeds ${maxsec}.
+
+Return ONLY valid JSON, no markdown, no preamble, in exactly this shape:
+{
+  "duration_sec": <integer estimate of total spoken duration>,
+  "over_limit": <true|false>,
+  "cues": [
+    {
+      "start": "HH:MM:SS,mmm",
+      "end": "HH:MM:SS,mmm",
+      "anchor": "<exact spoken phrase the cut lands on>",
+      "purpose": "proof|punctuation|interrupt",
+      "source": "footage|graphic",
+      "broll": "<concrete shot description>",
+      "effect": "<one effect from the vocabulary above>",
+      "design_prompt": "<Claude Design prompt for graphic cues, else empty string>",
+      "why": "<one short line: why this shot + effect here>"
+    }
+  ],
+  "brand_elements": [
+    { "name": "<reusable element>", "design_prompt": "<one-line branded Claude Design prompt>" }
+  ],
+  "notes": "<one or two short lines: pacing warning if over limit, or a global tip>"
+}
+
+TRANSCRIPT:
+${transcript}`;
+}
+
+// ---- API call ----
+async function run(){
+  const t = tx.value.trim();
+  $('#inerr').innerHTML='';
+  if(!t){ $('#inerr').innerHTML='<div class="err">Paste a transcript first.</div>'; return; }
+  const kind = detect(t).kind;
+  const vtype = $('#vtype').value;
+  const maxsec = parseInt($('#maxsec').value)||90;
+
+  const btn = $('#go'); btn.disabled=true; const label=btn.innerHTML;
+  btn.innerHTML='<span class="spin"></span> Analyzing…';
+  out.innerHTML='<div class="empty"><span class="spin" style="width:26px;height:26px;border-width:3px;border-top-color:var(--yellow);border-color:rgba(255,255,0,.2)"></span><br><br>Reading the transcript, placing cuts, assigning effects…</div>';
+  acts.style.display='none';
+
+  let rawText = '';
+  try{
+    const res = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-6", max_tokens:4000,
+        messages:[{role:"user", content: buildPrompt(t, kind, vtype, maxsec)}]
+      })
+    });
+    if(!res.ok) throw new Error("API "+res.status);
+    const data = await res.json();
+    rawText = data.content.filter(b=>b.type==='text').map(b=>b.text).join("\n");
+    const parsed = safeParse(rawText);            // repairs truncated JSON
+    lastData = {...parsed, _maxsec:maxsec};
+    render(lastData);
+  }catch(e){
+    const isNet = /Failed to fetch|NetworkError|Load failed|API \d/i.test(e.message);
+    out.innerHTML='<div class="empty"><span class="em-ic">⚠️</span>Couldn\'t build the map.</div>';
+    if(isNet){
+      $('#inerr').innerHTML='<div class="err"><b>'+esc(e.message)+'</b> — the analysis only runs when this file is opened <b>inside Claude</b> (it uses the in-artifact API). SRT download and copy still work once a map exists. On GitHub Pages or a local file, open it in Claude to generate.</div>';
+    }else{
+      $('#inerr').innerHTML='<div class="err"><b>Couldn\'t read the response ('+esc(e.message)+').</b> This is usually a one-off — hit <b>Regenerate</b>. If a very long transcript keeps failing, split it or lower the max seconds.</div>';
+    }
+  }finally{
+    btn.disabled=false; btn.innerHTML=label;
+  }
+}
+
+// Parse model JSON; if the response was truncated, recover the complete cues.
+function safeParse(raw){
+  let text = (raw||'').replace(/```json|```/g,'').trim();
+  const first = text.indexOf('{');
+  if(first>0) text = text.slice(first);
+  try{ return JSON.parse(text); }catch(_){}
+
+  // Repair: brace-scan the cues array, keep only fully-closed cue objects.
+  const cuesKey = text.indexOf('"cues"');
+  const arrOpen = cuesKey>=0 ? text.indexOf('[', cuesKey) : -1;
+  if(arrOpen>=0){
+    let depth=0, inStr=false, escd=false, start=-1; const objs=[];
+    for(let i=arrOpen+1;i<text.length;i++){
+      const ch=text[i];
+      if(inStr){ if(escd)escd=false; else if(ch==='\\')escd=true; else if(ch==='"')inStr=false; continue; }
+      if(ch==='"'){ inStr=true; continue; }
+      if(ch==='{'){ if(depth===0)start=i; depth++; }
+      else if(ch==='}'){ depth--; if(depth===0&&start>=0){ objs.push(text.slice(start,i+1)); start=-1; } }
+    }
+    if(objs.length){
+      const dur=(text.match(/"duration_sec"\s*:\s*(\d+)/)||[])[1]||'0';
+      const over=/"over_limit"\s*:\s*true/.test(text);
+      const recovered = start>=0; // a partial cue was dropped
+      const note = recovered ? '(recovered — the response was truncated, so the last cue was dropped. Regenerate for the full map.)' : '';
+      return JSON.parse(`{"duration_sec":${dur},"over_limit":${over},"cues":[${objs.join(',')}],"notes":"${note}"}`);
+    }
+  }
+  throw new Error(String((raw||'').length ? 'unreadable JSON' : 'empty response'));
+}
+
+// ---- render ----
+function esc(s){ return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function fmtTC(s){ return (s||'').replace(',',':').split(':').slice(0,3).join(':'); }
+
+function render(d){
+  const over = d.over_limit;
+  const legend = `<div class="legend">
+    <span><span class="dot" style="background:var(--proof)"></span>Proof</span>
+    <span><span class="dot" style="background:var(--punct)"></span>Punctuation</span>
+    <span><span class="dot" style="background:var(--interrupt)"></span>Pattern interrupt</span>
+  </div>`;
+  const meter = `<div class="meter ${over?'over':''}">
+    <div class="big">${d.duration_sec}s</div>
+    <div class="lbl">est. spoken<br>duration</div>
+    <div class="spacer"></div>
+    <div class="pill ${over?'over':'ok'}">${over?'OVER '+d._maxsec+'s — trim':'within '+d._maxsec+'s'}</div>
+    <div class="pill">${(d.cues||[]).length} cues</div>
+  </div>`;
+
+  const cues = (d.cues||[]).map((c,i)=>{
+    const p = (c.purpose||'').toLowerCase();
+    const pc = p.includes('proof')?'proof':p.includes('punct')?'punctuation':'interrupt';
+    const isGfx = (c.source||'').toLowerCase()==='graphic';
+    const srcBadge = isGfx
+      ? '<span class="src gfx">🎨 design</span>'
+      : '<span class="src foot">🎬 footage</span>';
+    const label = isGfx ? 'Graphic' : 'B-roll';
+    const dp = (isGfx && c.design_prompt) ? `
+      <div class="dprompt">
+        <div class="dp-head"><span class="dp-k">Claude Design prompt</span><button class="dp-copy" data-dp="${i}">Copy</button></div>
+        <div class="dp-body" id="dp${i}">${esc(c.design_prompt)}</div>
+      </div>` : '';
+    return `<div class="cue ${pc} ${isGfx?'is-gfx':''}">
+      <div class="cue-top">
+        <span class="tc">${esc(fmtTC(c.start))} → ${esc(fmtTC(c.end))}</span>
+        <span class="purpose ${pc}">${esc(c.purpose)}</span>
+        ${srcBadge}
+        <span class="anchor">on “<b>${esc(c.anchor)}</b>”</span>
+      </div>
+      <div class="cue-body">
+        <div class="field"><div class="k">${label}</div><div class="v">${esc(c.broll)}</div></div>
+        <div class="field"><div class="k">Effect</div><div class="v dir">${esc(c.effect)}</div></div>
+        <div class="why">${esc(c.why)}</div>
+        ${dp}
+      </div>
+    </div>`;
+  }).join('');
+
+  const be = (d.brand_elements||[]).filter(x=>x&&x.name);
+  const brand = be.length ? `<div class="brandbox">
+    <div class="bb-head">🏷️ Brand elements — build once in Claude Design, reuse every video</div>
+    ${be.map((b,i)=>`<div class="bb-row">
+      <div class="bb-name">${esc(b.name)}</div>
+      <div class="bb-prompt" id="be${i}">${esc(b.design_prompt||'')}</div>
+      <button class="dp-copy" data-be="${i}">Copy</button>
+    </div>`).join('')}
+  </div>` : '';
+
+  const notes = d.notes ? `<div class="notes"><b>Notes:</b> ${esc(d.notes)}</div>` : '';
+  out.innerHTML = meter + legend + cues + brand + notes;
+  acts.style.display='flex';
+
+  // wire copy buttons for design prompts + brand elements
+  out.querySelectorAll('.dp-copy').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.dataset.dp!=null ? 'dp'+btn.dataset.dp : 'be'+btn.dataset.be;
+      const el = document.getElementById(id);
+      if(!el) return;
+      navigator.clipboard.writeText(el.textContent).then(()=>{
+        const o=btn.textContent; btn.textContent='Copied'; setTimeout(()=>btn.textContent=o,1200);
+      }).catch(()=>toast('Copy blocked — open in a real browser tab'));
+    });
+  });
+
+  // build SRT blob — graphic cues labelled DESIGN so you know which need building first
+  const srt = (d.cues||[]).map((c,i)=>{
+    const tag = (c.source||'').toLowerCase()==='graphic' ? 'DESIGN' : 'B-ROLL';
+    return (i+1)+"\n"+normSrtTime(c.start)+" --> "+normSrtTime(c.end)+"\n"+
+      tag+": "+(c.broll||'').replace(/\n/g,' ')+" | "+(c.effect||'')+"\n";
+  }).join("\n");
+  lastSrtBlob = new Blob([srt],{type:'text/plain'});
+}
+function normSrtTime(s){
+  s=(s||'00:00:00,000').replace('.',',');
+  if(!/,/.test(s)) s+=',000';
+  const m=s.match(/(\d{1,2}):(\d{2}):(\d{2}),(\d{1,3})/);
+  if(!m) return '00:00:00,000';
+  const pad=(n,l)=>String(n).padStart(l,'0');
+  return `${pad(m[1],2)}:${m[2]}:${m[3]},${pad(m[4].padEnd(3,'0').slice(0,3),3)}`;
+}
+
+// ---- actions ----
+$('#go').addEventListener('click', run);
+$('#regen').addEventListener('click', run);
+$('#dlsrt').addEventListener('click', ()=>{
+  if(!lastSrtBlob) return;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(lastSrtBlob);
+  a.download='editmap_markers.srt';
+  a.click();
+  toast('SRT downloaded — import as a caption track in CapCut');
+});
+$('#copyall').addEventListener('click', ()=>{
+  if(!lastData) return;
+  const lines = (lastData.cues||[]).map(c=>{
+    const gfx = (c.source||'').toLowerCase()==='graphic';
+    const tag = gfx ? 'GRAPHIC' : 'B-ROLL';
+    let s = `[${fmtTC(c.start)} → ${fmtTC(c.end)}]  (${c.purpose} · ${gfx?'design':'footage'}) on "${c.anchor}"\n   ${tag}: ${c.broll}\n   EFFECT: ${c.effect}\n   WHY: ${c.why}`;
+    if(gfx && c.design_prompt) s += `\n   CLAUDE DESIGN PROMPT: ${c.design_prompt}`;
+    return s;
+  }).join('\n\n');
+  const be = (lastData.brand_elements||[]).filter(x=>x&&x.name);
+  const brand = be.length ? `\n\nBRAND ELEMENTS (build once, reuse):\n` + be.map(b=>`   ${b.name}: ${b.design_prompt||''}`).join('\n') : '';
+  const full = `EDIT MAP — est ${lastData.duration_sec}s (${(lastData.cues||[]).length} cues)\n\n${lines}${brand}\n\nNOTES: ${lastData.notes||''}`;
+  navigator.clipboard.writeText(full).then(()=>toast('Edit map copied')).catch(()=>toast('Copy blocked — open in a real browser tab'));
+});
+</script>
+</body>
+</html>

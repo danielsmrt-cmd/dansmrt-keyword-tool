@@ -48,15 +48,17 @@ $Routes = @{
   # .github/workflows/
   "daily.yml"      = ".github\workflows"
   # repo root
-  "broll_match.py"      = "."
-  "broll_viewer.html"   = "."
-  "insights.html"       = "."
-  "dashboard.html"      = "."
-  "ROADMAP.md"          = "."
-  "POST_PRODUCTION.md"  = "."
-  "README.md"           = "."
-  "calibration.md"      = "."
-  "keywords.txt"        = "."
+  "broll_match.py"       = "."
+  "broll_viewer.html"    = "."
+  "insights.html"        = "."
+  "dashboard.html"       = "."
+  "dansmrt_editmap.html" = "."
+  "transcribe_srt.py"    = "."
+  "ROADMAP.md"           = "."
+  "POST_PRODUCTION.md"   = "."
+  "README.md"            = "."
+  "calibration.md"       = "."
+  "keywords.txt"         = "."
 }
 
 # --- sanity: are we in the repo? ---
@@ -81,13 +83,21 @@ function Get-TrueName([string]$name) {
 
 # --- newest wins: group every inbox file by its true name, keep the latest ---
 $candidates = @{}
+$unknown = @()
 Get-ChildItem -Path $Inbox -File -Recurse | ForEach-Object {
   $true_name = Get-TrueName $_.Name
-  if (-not $Routes.ContainsKey($true_name)) { return }   # unknown file, skip
+  if (-not $Routes.ContainsKey($true_name)) { $unknown += $_.Name; return }   # unknown file, skip
   if (-not $candidates.ContainsKey($true_name) -or
       $_.LastWriteTime -gt $candidates[$true_name].LastWriteTime) {
     $candidates[$true_name] = $_
   }
+}
+
+if ($unknown.Count -gt 0) {
+  Write-Host ""
+  Write-Host "SKIPPED (not in routing table):" -ForegroundColor DarkYellow
+  $unknown | Sort-Object -Unique | ForEach-Object { Write-Host "  $_" -ForegroundColor DarkYellow }
+  Write-Host "Add these to `$Routes in sync.ps1 if they belong in the repo." -ForegroundColor DarkGray
 }
 
 if ($candidates.Count -eq 0) {
